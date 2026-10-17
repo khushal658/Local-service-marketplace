@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Services - Partner Portal</title>
+    
+    <!-- Bootstrap 5 CSS & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        .main-content {
+            padding-top: calc(var(--sp-topbar-height, 72px) + 24px) !important;
+            padding-bottom: 40px;
+        }
+        .service-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: #ffffff;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+        .img-container {
+            position: relative;
+            height: 190px;
+            width: 100%;
+            overflow: hidden;
+            background-color: #f1f5f9;
+        }
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .select-checkbox {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            z-index: 2;
+        }
+        .status-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: lowercase;
+            z-index: 2;
+        }
+        .badge-pending {
+            background-color: #ffc107;
+            color: #000;
+        }
+        .badge-approved {
+            background-color: #10b981;
+            color: #fff;
+        }
+        .service-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 2px;
+        }
+        .category-name {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+        .meta-info {
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        .price-text {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: #2563eb; /* ScreenShot Blue Color */
+        }
+        .action-icon-btn {
+            color: #475569;
+            font-size: 1.2rem;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .action-icon-btn:hover {
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+        .btn-promote {
+            background-color: #0ea5e9;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.88rem;
+            padding: 6px 18px;
+            border-radius: 8px;
+            border: none;
+            transition: background 0.2s ease;
+        }
+        .btn-promote:hover {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+{% include 'service_provider/navbar.html' %}
+
+<div class="main-content" id="mainContent">
+    <div class="container-fluid px-3 px-md-4">
+        
+        <!-- Header Row -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h5 class="fw-bold mb-0 text-dark">
+                    Showing <span class="text-primary">{{ total_services }}</span> of {{ total_services }} services
+                </h5>
+            </div>
+            <div>
+                <a href="{% url 'add_service' %}" class="btn btn-success fw-semibold rounded-3 px-3">
+                    <i class="bi bi-plus-lg me-1"></i> Add New Service
+                </a>
+            </div>
+        </div>
+
+        <!-- Services Cards Grid -->
+        <div class="row g-4">
+            {% for service in services %}
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                <div class="service-card h-100 d-flex flex-column justify-content-between">
+                    
+                    <div>
+                        <!-- Image & Badges -->
+                        <div class="img-container">
+                            <input type="checkbox" class="select-checkbox">
+                            
+                            {% if service.is_active %}
+                                <span class="status-badge badge-approved">active</span>
+                            {% else %}
+                                <span class="status-badge badge-pending">pending</span>
+                            {% endif %}
+
+                            {% if service.service_image %}
+                                <img src="{{ service.service_image.url }}" alt="{{ service.service_name }}">
+                            {% else %}
+                                <img src="{% static 'user/images/default_service.jpg' %}" alt="Default Service">
+                            {% endif %}
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-3">
+                            <h6 class="service-title">{{ service.service_name }}</h6>
+                            <div class="category-name">{{ service.category.name }}</div>
+
+                            <!-- Location -->
+                            <div class="meta-info mb-2">
+                                <i class="bi bi-geo-alt me-1 text-primary"></i> {{ service.service_area }}
+                                {% if service.service_pincode %}
+                                    <span class="ms-2 text-muted" style="font-size: 0.78rem;"><i class="bi bi-pin-map me-1 text-success"></i> PIN: {{ service.service_pincode }}</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Icons Row (Users, Experience, Rating) -->
+                            <div class="d-flex align-items-center gap-3 meta-info mb-3">
+                                <span><i class="bi bi-people me-1"></i></span>
+                                <span><i class="bi bi-clock me-1"></i> {{ service.experience }}</span>
+                                <span class="text-warning"><i class="bi bi-star-fill me-1"></i> 0</span>
+                            </div>
+
+                            <!-- Price -->
+                            {% if service.price and service.price > 0 %}
+                            <div class="price-text mb-2">
+                                ₹{{ service.price|floatformat:0 }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="p-3 pt-0">
+                        <hr class="my-2 text-muted opacity-25">
+
+                        <!-- Footer Action Buttons & Active/Inactive Toggle -->
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-1">
+                            <div class="d-flex align-items-center gap-1">
+                                <!-- View Details Icon (Directly opens live service on website) -->
+                                <a href="{% url 'view_service' %}?service_id={{ service.id }}" target="_blank" class="action-icon-btn text-info" title="View Live on Website">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+
+                                <!-- Edit Icon -->
+                                <a href="{% url 'edit_service' service.id %}" class="action-icon-btn text-primary" title="Edit Service">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <!-- Delete Icon (SweetAlert2 Confirmation) -->
+                                <a href="javascript:void(0);" class="action-icon-btn text-danger" title="Delete Service" onclick="confirmDelete('{{ service.id }}', '{{ service.service_name|escapejs }}')">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+
+                            <!-- Active / Inactive Toggle Button -->
+                            {% if service.is_active %}
+                                <a href="{% url 'toggle_service_status' service.id %}" class="btn btn-sm btn-success px-3 rounded-2 fw-semibold d-inline-flex align-items-center gap-1" title="Click to Deactivate & Hide from website">
+                                    <i class="bi bi-check-circle-fill"></i> Active
+                                </a>
+                            {% else %}
+                                <a href="{% url 'toggle_service_status' service.id %}" class="btn btn-sm btn-secondary px-3 rounded-2 fw-semibold d-inline-flex align-items-center gap-1" title="Click to Activate & Show on website">
+                                    <i class="bi bi-slash-circle-fill"></i> Inactive
+                                </a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-box-seam text-muted display-4 mb-3 d-block"></i>
+                <h5 class="fw-bold text-secondary">No Services Posted Yet</h5>
+                <p class="text-muted small mb-3">You haven't listed any service offers. Click below to add your first service.</p>
+                <a href="{% url 'add_service' %}" class="btn btn-primary rounded-3 px-4">Post First Service</a>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<!-- SweetAlert2 Toast & Delete Confirmation Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function confirmDelete(serviceId, serviceName) {
+        Swal.fire({
+            title: 'Delete Service?',
+            text: "Are you sure you want to delete '" + serviceName + "'? This action cannot be undone.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, Delete It!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const deleteUrl = "{% url 'delete_service' '00000000-0000-0000-0000-000000000000' %}".replace('00000000-0000-0000-0000-000000000000', serviceId);
+                window.location.href = deleteUrl;
+            }
+        });
+    }
+</script>
+
+{% if messages %}
+    {% for message in messages %}
+        {% if 'service_updated' in message.tags %}
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}success{% endif %}",
+                        title: "{{ message|escapejs }}",
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                });
+            </script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+</body>
+</html>

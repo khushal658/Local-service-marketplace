@@ -1,0 +1,148 @@
+{% load static %}
+{% include 'user/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Local Service Marketplace</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .profile-card { background: #fff; border-radius: 14px; box-shadow: 0 4px 20px rgba(15,46,42,0.06); padding: 32px; border: 1px solid rgba(15,46,42,0.1); margin-top: 10px; }
+        .profile-avatar-wrap { position: relative; width: 130px; height: 130px; margin: 0 auto 20px; }
+        .profile-avatar { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 4px solid #047857; }
+        .btn-update { background-color: #047857; color: white; font-weight: 600; padding: 12px 28px; border-radius: 8px; border: none; }
+        .btn-update:hover { background-color: #065f46; color: white; }
+        .form-section-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 20px; border-bottom: 2px solid #e9ecef; padding-bottom: 8px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="container py-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark mb-1">My Profile Settings 👤</h2>
+      <p class="text-muted small mb-0">Manage your personal account details and saved address.</p>
+    </div>
+    <a href="{% url 'user_index' %}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left"></i> Back to Home
+    </a>
+  </div>
+
+  <!-- Alert Messages -->
+  {% if messages %}
+      {% for message in messages %}
+          <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+              {% if message.tags == 'success' %}✓{% else %}⚠️{% endif %} {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      {% endfor %}
+  {% endif %}
+
+  <div class="profile-card">
+      <form action="{% url 'customer_profile' %}" method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          <!-- Profile Photo Section -->
+          <div class="text-center mb-4">
+              <div class="profile-avatar-wrap">
+                  {% if customer.profile_photo %}
+                      <img src="{{ customer.profile_photo.url }}" alt="Profile Photo" class="profile-avatar">
+                  {% else %}
+                      <img src="https://ui-avatars.com/api/?name={{ customer.full_name|urlencode }}&background=6366f1&color=fff" alt="Default Avatar" class="profile-avatar">
+                  {% endif %}
+              </div>
+              <div class="mb-3 col-md-6 mx-auto">
+                  <label for="profile_photo" class="form-label fw-bold">Change Profile Photo</label>
+                  <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/*">
+              </div>
+          </div>
+
+          <!-- 1. Personal Information -->
+          <div class="form-section-title"><i class="bi bi-person-fill text-primary"></i> Personal Information</div>
+          <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                  <label class="form-label fw-semibold">Full Name *</label>
+                  <input type="text" class="form-control" name="full_name" value="{{ customer.full_name }}" required>
+              </div>
+              
+              <div class="col-md-6">
+                  <label class="form-label fw-semibold">Email Address (Read Only)</label>
+                  <input type="email" class="form-control bg-light" value="{{ customer.email|default:customer.user.email }}" readonly>
+              </div>
+
+              <div class="col-md-6">
+                  <label class="form-label fw-semibold">Mobile Number *</label>
+                  <input type="tel" class="form-control" name="mobile" value="{{ customer.mobile }}" maxlength="10" required>
+              </div>
+
+              <div class="col-md-3">
+                  <label class="form-label fw-semibold">Gender</label>
+                  <select class="form-select" name="gender">
+                      <option value="">Select Gender</option>
+                      <option value="male" {% if customer.gender == 'male' %}selected{% endif %}>Male</option>
+                      <option value="female" {% if customer.gender == 'female' %}selected{% endif %}>Female</option>
+                      <option value="other" {% if customer.gender == 'other' %}selected{% endif %}>Other</option>
+                  </select>
+              </div>
+
+              <div class="col-md-3">
+                  <label class="form-label fw-semibold">Date of Birth</label>
+                  <input type="date" class="form-control" name="dob" value="{{ customer.dob|date:'Y-m-d' }}">
+              </div>
+          </div>
+
+          <!-- 2. Address Details -->
+          <div class="form-section-title"><i class="bi bi-geo-alt-fill text-primary"></i> Address Details</div>
+          <div class="row g-3 mb-4">
+              <div class="col-12">
+                  <label class="form-label fw-semibold">Full Address *</label>
+                  <textarea class="form-control" name="address" rows="2" required>{{ customer.address }}</textarea>
+              </div>
+
+              <div class="col-md-4">
+                  <label class="form-label fw-semibold">City *</label>
+                  <input type="text" class="form-control" name="city" value="{{ customer.city }}" required>
+              </div>
+
+              <div class="col-md-4">
+                  <label class="form-label fw-semibold">State *</label>
+                  <input type="text" class="form-control" name="state" value="{{ customer.state }}" required>
+              </div>
+
+              <div class="col-md-4">
+                  <label class="form-label fw-semibold">Pincode *</label>
+                  <input type="text" class="form-control" name="pincode" value="{{ customer.pincode }}" maxlength="6" required>
+              </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-end">
+              <button type="submit" class="btn btn-update">
+                  <i class="bi bi-check-circle-fill me-1"></i> Save & Update Profile
+              </button>
+          </div>
+      </form>
+  </div>
+
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% include 'user/footer.html' %}
+
+</body>
+</html>

@@ -1,0 +1,220 @@
+{% load static %}
+{% include 'user/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Local Service Marketplace</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Login Page Custom Styles -->
+    <link rel="stylesheet" href="{% static 'user/login.css' %}">
+</head>
+<body>
+
+<div class="stage">
+
+    <div class="card" id="card">
+
+
+
+
+<!-- ===== CUSTOMER FORM (Left Side) ===== -->
+<div class="form-panel customer-side">
+    <form class="login-form" action="{% url 'customer_login' %}" method="POST" autocomplete="off">
+        {% csrf_token %}
+        
+        <span class="eyebrow"><i class="bi bi-person-fill"></i> Customer Portal</span>
+        <h1>Customer Login</h1>
+        <p class="sub">Log in to book trusted local service professionals in your area.</p>
+
+        <div class="field">
+            <span><i class="bi bi-envelope-fill"></i> Email Address</span>
+            <input type="email" name="customer-email" placeholder="name@example.com" required>
+        </div>
+
+        <div class="field">
+            <span><i class="bi bi-lock-fill"></i> Password</span>
+            <input type="password" name="customer-password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="bi bi-box-arrow-in-right"></i> Log In As Customer
+        </button>
+
+        <div class="links-row">
+            <a class="ghost-link" href="#">Forgot Password?</a>
+            <a class="ghost-link" href="{% url 'customer_register' %}">Create Account</a>
+        </div>
+    </form>
+</div>
+
+        <!-- ===== PROVIDER FORM (Right Side) ===== -->
+       <div class="form-panel provider-side">
+
+    <form class="login-form"
+          method="POST"
+          action="{% url 'provider_login' %}"
+          autocomplete="off">
+
+        {% csrf_token %}
+
+        <span class="eyebrow">
+            <i class="bi bi-briefcase-fill"></i>
+            Partner Portal
+        </span>
+
+        <h1>Provider Login</h1>
+
+        <p class="sub">
+            Sign in to manage your customer bookings
+            and grow your business.
+        </p>
+
+
+        <!-- Email -->
+        <div class="field">
+
+            <span>
+                <i class="bi bi-envelope-fill"></i>
+                Email Address
+            </span>
+
+            <input
+                type="email"
+                name="provider-email"
+                placeholder="name@example.com"
+                required>
+
+        </div>
+
+
+        <!-- Password -->
+        <div class="field">
+
+            <span>
+                <i class="bi bi-lock-fill"></i>
+                Password
+            </span>
+
+            <input
+                type="password"
+                name="provider-password"
+                placeholder="••••••••"
+                required>
+
+        </div>
+
+
+        <!-- Login Button -->
+        <button
+            type="submit"
+            class="btn-submit">
+
+            <i class="bi bi-box-arrow-in-right"></i>
+            Log In As Provider
+
+        </button>
+
+
+        <!-- SweetAlert2 Toast Popup Messages -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        {% if messages %}
+            {% for message in messages %}
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        const card = document.getElementById('card');
+                        {% if 'provider_login' in message.tags %}
+                            if (card) card.classList.add('is-provider');
+                        {% elif 'customer_login' in message.tags %}
+                            if (card) card.classList.remove('is-provider');
+                        {% endif %}
+
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: "{% if 'error' in message.tags %}error{% elif 'warning' in message.tags %}warning{% else %}success{% endif %}",
+                            title: "{{ message|escapejs }}",
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true
+                        });
+                    });
+                </script>
+            {% endfor %}
+        {% endif %}
+
+
+        <div class="links-row">
+
+            <a
+                class="ghost-link"
+                href="#">
+                Forgot Password?
+            </a>
+
+            <a
+                class="ghost-link"
+                href="{% url 'become_provider' %}#registerSection">
+                Become a Partner
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+        <!-- ===== SLIDING SHUTTER OVERLAY ===== -->
+        <div class="shutter-container" id="shutterContainer">
+            <div class="shutter" id="shutter">
+
+                <!-- Left Panel (shown when Provider form active -> invites Customer) -->
+                <div class="shutter-panel shutter-left">
+                    <div class="shutter-badge"><i class="bi bi-search"></i> Looking For A Service?</div>
+                    <h2>Need A Local Expert?</h2>
+                    <p>Book top-rated, background-verified home repair and personal care professionals in your city.</p>
+                    <button type="button" class="btn-ghost-outline" id="showCustomer">
+                        <i class="bi bi-person-circle"></i> Switch To Customer Login
+                    </button>
+                </div>
+
+                <!-- Right Panel (shown when Customer form active -> invites Provider) -->
+                <div class="shutter-panel shutter-right">
+                    <div class="shutter-badge"><i class="bi bi-tools"></i> Are You A Professional?</div>
+                    <h2>Grow Your Business With Us</h2>
+                    <p>Join thousands of skilled service partners and receive instant local customer job requests.</p>
+                    <button type="button" class="btn-ghost-outline" id="showProvider">
+                        <i class="bi bi-briefcase"></i> Switch To Provider Login
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <p class="footnote">Local Service Marketplace — Trusted Local Pros At Your Doorstep</p>
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const card = document.getElementById('card');
+        const showProvider = document.getElementById('showProvider');
+        const showCustomer = document.getElementById('showCustomer');
+
+        if (showProvider && showCustomer && card) {
+            showProvider.addEventListener('click', () => card.classList.add('is-provider'));
+            showCustomer.addEventListener('click', () => card.classList.remove('is-provider'));
+        }
+    });
+</script>
+
+{% include 'user/footer.html' %}
+
+</body>
+</html>

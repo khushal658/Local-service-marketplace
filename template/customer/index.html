@@ -1,0 +1,327 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard | ServiceHub</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 Toast -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+   <link rel="stylesheet" href="{% static 'customer/style.css' %}">
+</head>
+<body>
+
+{% include 'customer/navbar.html' %}
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="cp-main">
+
+  <div class="cp-page-head">
+    <div>
+      <h1>Welcome back, Rahul 👋</h1>
+      <div class="cp-sub">Here's what's happening with your bookings today.</div>
+    </div>
+    <a href="#" class="cp-btn-primary">
+      <i class="bi bi-plus-lg"></i> Book a New Service
+    </a>
+  </div>
+
+  <!-- STAT CARDS -->
+  <div class="cp-stats-row">
+    <div class="cp-stat-card is-total">
+      <div class="cp-stat-top">
+        <div class="cp-stat-icon"><i class="bi bi-journal-check"></i></div>
+        <span class="cp-stat-badge">All time</span>
+      </div>
+      <div class="cp-stat-value">5</div>
+      <div class="cp-stat-label">Total Bookings</div>
+    </div>
+
+    <div class="cp-stat-card is-active">
+      <div class="cp-stat-top">
+        <div class="cp-stat-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+        <span class="cp-stat-badge">Live</span>
+      </div>
+      <div class="cp-stat-value">2</div>
+      <div class="cp-stat-label">Active Bookings</div>
+    </div>
+
+    <div class="cp-stat-card is-completed">
+      <div class="cp-stat-top">
+        <div class="cp-stat-icon"><i class="bi bi-check2-circle"></i></div>
+        <span class="cp-stat-badge">Done</span>
+      </div>
+      <div class="cp-stat-value">3</div>
+      <div class="cp-stat-label">Completed Bookings</div>
+    </div>
+
+    <div class="cp-stat-card is-spend">
+      <div class="cp-stat-top">
+        <div class="cp-stat-icon"><i class="bi bi-currency-rupee"></i></div>
+        <span class="cp-stat-badge">Lifetime</span>
+      </div>
+      <div class="cp-stat-value">₹4,200</div>
+      <div class="cp-stat-label">Total Spent</div>
+    </div>
+  </div>
+
+  <!-- RECENT BOOKINGS PANEL -->
+  <div class="cp-panel">
+    <div class="cp-panel-head">
+      <h5>Recent Bookings</h5>
+      <div class="cp-tab-pills">
+        <button class="cp-tab-pill active" data-filter="all">All</button>
+        <button class="cp-tab-pill" data-filter="active">Active</button>
+        <button class="cp-tab-pill" data-filter="completed">Completed</button>
+        <button class="cp-tab-pill" data-filter="cancelled">Cancelled</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="cp-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Date &amp; Time</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- ROW 1: Confirmed -->
+          <tr data-status="confirmed">
+            <td>
+              <div class="cp-service-cell">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=120&q=80" alt="Electrical Repair">
+                <div>
+                  <div class="name">Home Electrical Wiring & Repair</div>
+                  <div class="provider">Gopi Electrical Services</div>
+                </div>
+              </div>
+            </td>
+            <td>18 Aug 2026 · 10:00 AM</td>
+            <td>₹500</td>
+            <td><span class="cp-pay paid">Paid</span></td>
+            <td><span class="cp-status confirmed">Confirmed</span></td>
+            <td>
+              <div class="d-flex justify-content-end gap-1">
+                <a href="#" class="cp-icon-btn" title="View details"><i class="bi bi-eye"></i></a>
+                <button type="button" class="cp-icon-btn danger btn-cancel-booking" title="Cancel booking"><i class="bi bi-x-lg"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ROW 2: Pending -->
+          <tr data-status="pending">
+            <td>
+              <div class="cp-service-cell">
+                <img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=120&q=80" alt="AC Service">
+                <div>
+                  <div class="name">AC Deep Cleaning & Service</div>
+                  <div class="provider">CoolCare Experts</div>
+                </div>
+              </div>
+            </td>
+            <td>19 Aug 2026 · 02:30 PM</td>
+            <td>₹1,200</td>
+            <td><span class="cp-pay paid">Paid</span></td>
+            <td><span class="cp-status pending">Pending</span></td>
+            <td>
+              <div class="d-flex justify-content-end gap-1">
+                <a href="#" class="cp-icon-btn" title="View details"><i class="bi bi-eye"></i></a>
+                <button type="button" class="cp-icon-btn danger btn-cancel-booking" title="Cancel booking"><i class="bi bi-x-lg"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ROW 3: Completed -->
+          <tr data-status="completed">
+            <td>
+              <div class="cp-service-cell">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=120&q=80" alt="Home Cleaning">
+                <div>
+                  <div class="name">Full House Deep Cleaning</div>
+                  <div class="provider">CleanHome Solutions</div>
+                </div>
+              </div>
+            </td>
+            <td>15 Aug 2026 · 11:00 AM</td>
+            <td>₹1,500</td>
+            <td><span class="cp-pay paid">Paid</span></td>
+            <td><span class="cp-status completed">Completed</span></td>
+            <td>
+              <div class="d-flex justify-content-end gap-1">
+                <a href="#" class="cp-icon-btn" title="View details"><i class="bi bi-eye"></i></a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- ROW 4: Cancelled -->
+          <tr data-status="cancelled">
+            <td>
+              <div class="cp-service-cell">
+                <img src="https://images.unsplash.com/photo-1607472586893-edb57bdc0e39?auto=format&fit=crop&w=120&q=80" alt="Plumbing">
+                <div>
+                  <div class="name">Tap & Pipe Leakage Fix</div>
+                  <div class="provider">Quick Plumbing Co.</div>
+                </div>
+              </div>
+            </td>
+            <td>10 Aug 2026 · 04:00 PM</td>
+            <td>₹1,000</td>
+            <td><span class="cp-pay unpaid">Unpaid</span></td>
+            <td><span class="cp-status cancelled">Cancelled</span></td>
+            <td>
+              <div class="d-flex justify-content-end gap-1">
+                <a href="#" class="cp-icon-btn" title="View details"><i class="bi bi-eye"></i></a>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MY POSTED CUSTOM REQUIREMENTS PANEL -->
+  <div class="cp-panel mt-4">
+    <div class="cp-panel-head">
+      <h5>My Posted Custom Requirements</h5>
+      <a href="{% url 'customer_my_requests' %}" class="btn btn-sm text-white fw-semibold" style="background-color: #047857;">View All</a>
+    </div>
+
+    <div class="table-responsive">
+      {% if custom_requests %}
+        <table class="cp-table">
+          <thead>
+            <tr>
+              <th>Title / Requirement</th>
+              <th>Category</th>
+              <th>City / Area</th>
+              <th>Budget</th>
+              <th>Received Bids</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for req in custom_requests|slice:":5" %}
+              <tr>
+                <td class="fw-bold text-dark">{{ req.title }}</td>
+                <td>{{ req.category|default:"General" }}</td>
+                <td>{{ req.city_area }}</td>
+                <td>{% if req.budget %}₹{{ req.budget }}{% else %}N/A{% endif %}</td>
+                <td>
+                  {% if req.quotes.count > 0 %}
+                    <span class="badge bg-success" style="font-size: 12px;">{{ req.quotes.count }} Bid(s) Received</span>
+                  {% else %}
+                    <span class="text-muted small">0 Bids</span>
+                  {% endif %}
+                </td>
+                <td><span class="cp-status {% if req.status == 'pending' %}pending{% else %}completed{% endif %}">{{ req.status|title }}</span></td>
+                <td class="text-end">
+                  <a href="{% url 'customer_my_requests' %}" class="btn btn-sm btn-outline-success fw-semibold">
+                    <i class="bi bi-eye"></i> View Bids & Manage
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <div class="p-4 text-center text-muted">
+          <p class="mb-1">You haven't posted any custom service requirements yet.</p>
+          <a href="{% url 'service' %}" class="small text-success text-decoration-none fw-semibold">Search Services & Post Requirement &rarr;</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</main>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const body = document.body;
+  const toggleBtn = document.getElementById('cpSidebarToggle');
+  const backdrop = document.getElementById('cpBackdrop');
+  const isMobile = () => window.innerWidth <= 992;
+
+  toggleBtn.addEventListener('click', function () {
+    if (isMobile()) {
+      body.classList.toggle('cp-mobile-open');
+    } else {
+      body.classList.toggle('cp-collapsed');
+    }
+  });
+
+  backdrop.addEventListener('click', function () {
+    body.classList.remove('cp-mobile-open');
+  });
+
+  /* --- Status tab filtering (recent bookings table) --- */
+  const pills = document.querySelectorAll('.cp-tab-pill');
+  const rows = document.querySelectorAll('.cp-table tbody tr');
+  const activeSet = ['pending', 'confirmed'];
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', function () {
+      pills.forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+      const filter = this.dataset.filter;
+
+      rows.forEach(row => {
+        const status = row.dataset.status;
+        let show = true;
+        if (filter === 'active') show = activeSet.includes(status);
+        else if (filter === 'completed') show = status === 'completed';
+        else if (filter === 'cancelled') show = status === 'cancelled';
+        row.style.display = show ? '' : 'none';
+      });
+    });
+  });
+
+  /* --- Cancel booking with SweetAlert2 confirmation --- */
+  document.querySelectorAll('.btn-cancel-booking').forEach(btn => {
+    btn.addEventListener('click', function () {
+      Swal.fire({
+        title: 'Cancel this booking?',
+        text: "Are you sure you want to cancel this booking? This action cannot be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#047857',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, cancel it'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Booking cancelled successfully!',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true
+          });
+        }
+      });
+    });
+  });
+});
+</script>
+
+</body>
+</html>

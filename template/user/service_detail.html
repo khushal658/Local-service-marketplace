@@ -1,0 +1,1265 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% if service %}{{ service.service_name }}{% else %}Service Details{% endif %} - Local Service Marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="{% static 'user/service_detiail.css' %}">
+
+<style>
+  /* Keyframes Animations */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes rippleEffect {
+    0% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0.35); }
+    70% { box-shadow: 0 0 0 10px rgba(4, 120, 87, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0); }
+  }
+
+  .layout > div {
+    animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  }
+  .layout > div:nth-child(1) { animation-delay: 0.05s; }
+  .layout > div:nth-child(2) { animation-delay: 0.1s; }
+  .layout > div:nth-child(3) { animation-delay: 0.15s; }
+  .layout > div:nth-child(4) { animation-delay: 0.2s; }
+  .layout > div:nth-child(5) { animation-delay: 0.25s; }
+
+  /* Layout Spacing & Full Width Alignment */
+  .page-wrap {
+    max-width: 1380px;
+    width: 96%;
+    margin: 0 auto;
+    padding: 14px 10px 40px;
+  }
+  @media (min-width: 1000px) {
+    .page-wrap {
+      padding: 16px 14px 56px;
+    }
+  }
+
+  /* Main Hero Frame & Media Switcher */
+  .hero {
+    position: relative;
+    width: 100%;
+    height: 390px;
+    background: #0F2E2A;
+    border-radius: 14px 14px 0 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .main-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .main-img:hover {
+    transform: scale(1.02);
+  }
+  .hero-video-wrapper {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .main-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Thumbnails Strip (Photos + Videos Side by Side) */
+  .thumb-strip {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px 16px;
+    overflow-x: auto;
+    align-items: center;
+    background: #ffffff;
+  }
+  .thumb-item {
+    position: relative;
+    width: 76px;
+    height: 76px;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2.5px solid transparent;
+    opacity: 0.75;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    background: #f1f5f9;
+  }
+  .thumb-item:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+  .thumb-item.active {
+    border-color: #FF7A33;
+    opacity: 1;
+    box-shadow: 0 0 0 2px rgba(255,122,51,0.3);
+  }
+  .thumb-item img, .thumb-video-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .thumb-video-badge {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    color: #ffffff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    gap: 1px;
+  }
+  .thumb-video-badge i {
+    font-size: 1.3rem;
+    color: #FF7A33;
+  }
+
+  /* Premium & Spacious Provider Card Styling */
+  .provider-card-hero {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #ffffff 0%, #f4fbf8 100%);
+    border: 1.5px solid rgba(4, 120, 87, 0.2);
+    border-radius: 18px;
+    padding: 22px 26px;
+    box-shadow: 0 8px 24px rgba(4, 120, 87, 0.07);
+    transition: all 0.3s ease;
+  }
+  .provider-card-hero:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(4, 120, 87, 0.12);
+    border-color: #047857;
+  }
+  .provider-avatar-wrapper {
+    position: relative;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .provider-avatar-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #047857;
+    box-shadow: 0 4px 14px rgba(4, 120, 87, 0.22);
+  }
+  .online-indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 15px;
+    height: 15px;
+    background: #10b981;
+    border: 2.5px solid #ffffff;
+    border-radius: 50%;
+  }
+  .provider-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .provider-top-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .provider-name {
+    font-size: 1.28rem;
+    font-weight: 700;
+    color: #0E2224;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .badge-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e7f6ec;
+    color: #047857;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(4, 120, 87, 0.25);
+  }
+  .provider-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .badge-exp {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.84rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+  }
+  .location-tag {
+    font-size: 0.88rem;
+    color: #334155;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+  }
+  .location-tag i {
+    color: #ef4444;
+  }
+  .provider-info-grid {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(4, 120, 87, 0.18);
+    font-size: 0.88rem;
+    color: #475569;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .info-item i.bi-clock-history {
+    color: #047857;
+  }
+  .info-item i.bi-telephone-fill {
+    color: #10b981;
+  }
+
+  /* Related Services Header Bar */
+  .related-header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .related-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .slider-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1.5px solid rgba(4, 120, 87, 0.2);
+    color: #047857;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .slider-nav-btn:hover {
+    background: #047857;
+    color: #ffffff;
+    border-color: #047857;
+    transform: scale(1.08);
+  }
+  .btn-view-all-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #e7f6ec;
+    color: #047857;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(4, 120, 87, 0.25);
+  }
+  .btn-view-all-pill:hover {
+    background: #047857;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(4, 120, 87, 0.25);
+  }
+
+  /* Related Scroll Slider */
+  .related-scroll-container {
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 6px 2px 14px;
+    scroll-snap-type: x mandatory;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #047857 #f1f5f9;
+  }
+  .related-scroll-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  .related-scroll-container::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+  .related-scroll-container::-webkit-scrollbar-thumb {
+    background: #047857;
+    border-radius: 10px;
+  }
+
+  .related-card-item {
+    min-width: 260px;
+    max-width: 260px;
+    height: 250px;
+    scroll-snap-align: start;
+    background: #ffffff;
+    border: 1.5px solid rgba(4, 120, 87, 0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .related-card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 28px rgba(4, 120, 87, 0.14);
+    border-color: #047857;
+  }
+
+  .rc-img-box {
+    position: relative;
+    height: 135px;
+    width: 100%;
+    overflow: hidden;
+    background: #0F2E2A;
+  }
+  .rc-img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+  .related-card-item:hover .rc-img-box img {
+    transform: scale(1.08);
+  }
+  .rc-category-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: rgba(15, 46, 42, 0.85);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+  }
+  .rc-content {
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    justify-content: space-between;
+  }
+  .rc-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0E2224;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .rc-price {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #047857;
+  }
+  .rc-provider {
+    font-size: 0.78rem;
+    color: #64748b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Premium Explore All Services End Card */
+  .view-more-card {
+    background: linear-gradient(135deg, #047857 0%, #022c22 100%);
+    color: #ffffff !important;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: none;
+    position: relative;
+    padding: 20px 16px;
+  }
+  .view-more-card:hover {
+    box-shadow: 0 14px 32px rgba(4, 120, 87, 0.35);
+  }
+  .vm-icon-glow {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+  .view-more-card:hover .vm-icon-glow {
+    transform: scale(1.12) rotate(6deg);
+    background: #34d399;
+  }
+  .vm-icon-glow i {
+    font-size: 1.8rem;
+    color: #ffffff;
+    transition: color 0.3s ease;
+  }
+  .view-more-card:hover .vm-icon-glow i {
+    color: #022c22;
+  }
+  .vm-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .vm-subtitle {
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 500;
+  }
+
+  /* Live Location Button */
+  .btn-live-location {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #e6f4f1;
+    color: #047857;
+    border: 1.5px solid #047857;
+    border-radius: 8px;
+    padding: 9px 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-live-location:hover {
+    background: #047857;
+    color: #ffffff;
+    animation: rippleEffect 1.5s infinite;
+  }
+  .btn-book-full {
+    transition: all 0.25s ease;
+  }
+  .btn-book-full:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255,122,51,0.35);
+  }
+
+  /* Premium & Clean Skills Pills Grid */
+  .skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .skill-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #f0fdf4;
+    color: #065f46;
+    border: 1.5px solid rgba(4, 120, 87, 0.22);
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(4, 120, 87, 0.05);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .skill-pill:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(4, 120, 87, 0.16);
+    background: #047857;
+    color: #ffffff;
+    border-color: #047857;
+  }
+  .skill-icon-box {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #047857;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+  /* Scrollable Booking Sidebar Fix */
+  .sidebar, .booking-card {
+    grid-area: sidebar;
+  }
+
+  /* Desktop Only: Sticky Booking Card */
+  @media (min-width: 1000px) {
+    .booking-card {
+      position: sticky;
+      top: 88px;
+      max-height: calc(100vh - 105px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #047857 #f1f5f9;
+    }
+    .booking-card::-webkit-scrollbar {
+      width: 6px;
+    }
+    .booking-card::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 10px;
+    }
+    .booking-card::-webkit-scrollbar-thumb {
+      background: #047857;
+      border-radius: 10px;
+    }
+  }
+
+  /* Mobile & Tablet: Natural Non-Sticky Scrolling (Prevents Reviews Card Overlap) */
+  @media (max-width: 999.98px) {
+    .booking-card {
+      position: static !important;
+      top: auto !important;
+      max-height: none !important;
+      overflow-y: visible !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+{% include 'user/navbar.html' %}
+
+<div class="page-wrap">
+  <div class="layout">
+
+    {% if service %}
+
+    <!-- 1. SERVICE MEDIA GALLERY (MAIN HERO FRAME + PHOTOS & VIDEOS THUMBSTRIP) -->
+    <div class="gallery">
+      <div class="gallery-card">
+        <!-- Main Media Container (Image or Video) -->
+        <div class="hero" id="mainHeroContainer">
+          {% if service.service_image %}
+            <img id="mainImg" class="main-img" src="{{ service.service_image.url }}" alt="{{ service.service_name }}">
+          {% else %}
+            <img id="mainImg" class="main-img" src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?q=80&w=1000&auto=format&fit=crop" alt="{{ service.service_name }}">
+          {% endif %}
+        </div>
+
+        <!-- Thumbnails Strip (Images & Videos Combined) -->
+        <div class="thumb-strip" id="thumbStrip">
+          <!-- Main Cover Image Thumbnail -->
+          {% if service.service_image %}
+            <div class="thumb-item active" onclick="showHeroImage('{{ service.service_image.url }}', this)">
+              <img src="{{ service.service_image.url }}" alt="Main Image">
+            </div>
+          {% endif %}
+
+          <!-- Gallery Image 1 Thumbnail -->
+          {% if service.gallery_image1 %}
+            <div class="thumb-item" onclick="showHeroImage('{{ service.gallery_image1.url }}', this)">
+              <img src="{{ service.gallery_image1.url }}" alt="Gallery 1">
+            </div>
+          {% endif %}
+
+          <!-- Gallery Image 2 Thumbnail -->
+          {% if service.gallery_image2 %}
+            <div class="thumb-item" onclick="showHeroImage('{{ service.gallery_image2.url }}', this)">
+              <img src="{{ service.gallery_image2.url }}" alt="Gallery 2">
+            </div>
+          {% endif %}
+
+          <!-- Gallery Image 3 Thumbnail -->
+          {% if service.gallery_image3 %}
+            <div class="thumb-item" onclick="showHeroImage('{{ service.gallery_image3.url }}', this)">
+              <img src="{{ service.gallery_image3.url }}" alt="Gallery 3">
+            </div>
+          {% endif %}
+
+          <!-- Video 1 Thumbnail -->
+          {% if service.service_video %}
+            <div class="thumb-item" onclick="showHeroVideo('{{ service.service_video.url }}', this)">
+              <div class="thumb-video-badge">
+                <i class="bi bi-play-circle-fill"></i>
+                <span>Video 1</span>
+              </div>
+              <video class="thumb-video-preview" src="{{ service.service_video.url }}#t=0.5" preload="metadata"></video>
+            </div>
+          {% endif %}
+
+          <!-- Video 2 Thumbnail -->
+          {% if service.service_video2 %}
+            <div class="thumb-item" onclick="showHeroVideo('{{ service.service_video2.url }}', this)">
+              <div class="thumb-video-badge">
+                <i class="bi bi-play-circle-fill"></i>
+                <span>Video 2</span>
+              </div>
+              <video class="thumb-video-preview" src="{{ service.service_video2.url }}#t=0.5" preload="metadata"></video>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. SERVICE INFORMATION -->
+    <div class="info card">
+      <span class="eyebrow">{{ service.category.name }} {% if service.subcategory %} › {{ service.subcategory.subcat_names }}{% endif %}</span>
+      <div class="row-between">
+        <h1 class="service-title display">{{ service.service_name }}</h1>
+        <div class="rating-dial">
+          <div class="rating-dial-inner">
+            <span class="num">{% if provider_avg_rating and provider_avg_rating > 0 %}{{ provider_avg_rating }}{% else %}New{% endif %}</span>
+            <span class="stars">★</span>
+          </div>
+        </div>
+      </div>
+      {% if service.price and service.price > 0 %}
+      <div class="price-block">
+        <div class="price-label">Starting Visit Charge</div>
+        <span class="price mono">₹{{ service.price|floatformat:0 }}</span>
+        <span class="price-from"> / inspection visit</span>
+        <div class="small text-muted mt-1" style="font-size: 0.84rem; color: #475569;">
+          <i class="bi bi-info-circle-fill text-emerald me-1"></i> ℹ️ ही सुरुवातीची पाहणी फी (Visit Fee) आहे. कामाच्या स्वरूपानुसार अंतिम किंमत प्रोव्हायडर पाहणीनंतर नक्की करेल.
+        </div>
+      </div>
+      {% endif %}
+      <p class="short-desc">{{ service.service_description }}</p>
+    </div>
+
+    <!-- 3. PROVIDER INFORMATION (Spacious & Clean Provider Profile Card) -->
+    <div class="provider card provider-card-hero">
+      <div class="provider-avatar-wrapper">
+        {% if provider_info and provider_info.profile_image %}
+          <img class="provider-avatar-img" src="{{ provider_info.profile_image.url }}" alt="Provider profile photo">
+        {% else %}
+          <img class="provider-avatar-img" src="https://ui-avatars.com/api/?name={{ provider_info.full_name|default:service.provider_email }}&background=047857&color=fff&size=128" alt="Provider profile photo">
+        {% endif %}
+        <span class="online-indicator" title="Verified & Online"></span>
+      </div>
+      
+      <div class="provider-details">
+        <!-- Row 1: Provider Name & Verified Badge -->
+        <div class="provider-top-row">
+          <h3 class="provider-name">{% if provider_info %}{{ provider_info.full_name }}{% else %}{{ service.provider_email }}{% endif %}</h3>
+          <span class="badge-verified">
+            <i class="bi bi-patch-check-fill me-1"></i> Verified Expert
+          </span>
+        </div>
+
+        <!-- Row 2: Experience & Location Badges -->
+        <div class="provider-meta-row">
+          <span class="badge-exp"><i class="bi bi-award-fill me-1"></i> {{ service.experience }} Experience</span>
+          <span class="location-tag"><i class="bi bi-geo-alt-fill me-1"></i>  <b>{{ service.service_area }}</b></span>
+        </div>
+
+        <!-- Row 3: Working Days, Availability & Phone Contact -->
+        <div class="provider-info-grid">
+          <div class="info-item">
+            <i class="bi bi-calendar-check-fill text-emerald"></i>
+            <span><b>Working Days:</b> {{ service.available_days|default:"Mon - Sun" }}</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-clock-history"></i>
+            <span><b>Working Hours:</b> {{ service.availability }}</span>
+          </div>
+          <div class="info-item">
+            <i class="bi bi-telephone-fill"></i>
+            <span><b>Contact:</b> {{ service.contact_number }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. ABOUT SERVICE -->
+    <div class="about card">
+      <div class="section-heading"><span class="bar"></span>About this service</div>
+      <p class="full-desc">
+        {{ service.service_description }}
+      </p>
+    </div>
+
+    <!-- 5. SERVICE INCLUDES -->
+    <div class="includes card">
+      <div class="section-heading"><span class="bar"></span>Service & Skills Included</div>
+      <p class="mb-2 text-muted small">Specialized expertise and tools provided for this service:</p>
+      
+      <div class="skills-grid">
+        {% if skills_list %}
+          {% for skill in skills_list %}
+            <div class="skill-pill">
+              <div class="skill-icon-box"><i class="bi bi-check-lg"></i></div>
+              <span>{{ skill }}</span>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="skill-pill">
+            <div class="skill-icon-box"><i class="bi bi-check-lg"></i></div>
+            <span>{{ service.skills_included }}</span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 6. BOOKING SIDEBAR (CUSTOMER FORM ON RIGHT SIDE WITH LIVE LOCATION) -->
+   <!-- Razorpay Checkout SDK & SweetAlert2 -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="card booking-card shadow-sm p-4 rounded-4 bg-white border">
+  <h5 class="fw-bold text-dark mb-3"><i class="bi bi-calendar2-check-fill text-success me-1"></i> Book Service Now</h5>
+
+  <form id="serviceBookingForm" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <!-- Date Selection -->
+    <label class="form-label fw-bold small text-muted d-flex justify-content-between align-items-center">
+      <span>1. SELECT DATE *</span>
+      <span class="badge bg-success-subtle text-success fw-semibold" style="font-size: 0.75rem;">Next 30 Days</span>
+    </label>
+    
+    <!-- Quick Date Shortcuts -->
+    <div class="d-flex gap-2 mb-2" id="dateChips">
+      <button type="button" class="btn btn-outline-success btn-sm flex-fill date-chip active" id="btnToday">
+        <i class="bi bi-calendar-event me-1"></i> Today
+      </button>
+      <button type="button" class="btn btn-outline-success btn-sm flex-fill date-chip" id="btnTomorrow">
+        <i class="bi bi-calendar-plus me-1"></i> Tomorrow
+      </button>
+    </div>
+
+    <!-- Calendar Date Picker Input -->
+    <div class="input-group mb-1">
+      <span class="input-group-text bg-light text-success border-end-0">
+        <i class="bi bi-calendar3"></i>
+      </span>
+      <input type="date" name="booking_date" id="bookingDateInput" class="form-control border-start-0 ps-1 fw-semibold" required>
+    </div>
+    
+
+    <!-- Time Slot -->
+    <label class="form-label fw-bold small text-muted">2. SELECT TIME SLOT *</label>
+    <select name="time_slot" class="form-select mb-3" required>
+      <option value="09:00 – 11:00 AM">09:00 – 11:00 AM (Morning)</option>
+      <option value="11:00 – 01:00 PM" selected>11:00 – 01:00 PM (Noon)</option>
+      <option value="02:00 – 04:00 PM">02:00 – 04:00 PM (Afternoon)</option>
+      <option value="06:00 – 08:00 PM">06:00 – 08:00 PM (Evening)</option>
+    </select>
+
+    <!-- Address -->
+    <label class="form-label fw-bold small text-muted">3. CUSTOMER ADDRESS *</label>
+    <textarea name="customer_address" id="custAddress" class="form-control mb-3" rows="2" placeholder="Flat No., House, Street, Landmark, Area..." required></textarea>
+
+    <!-- Notes -->
+    <label class="form-label fw-bold small text-muted">4. NOTES / INSTRUCTIONS (OPTIONAL)</label>
+    <textarea name="notes" class="form-control mb-3" rows="2" placeholder="e.g. Bring extra wire, gate code is 1234..."></textarea>
+
+    <!-- Problem Photo -->
+    <label class="form-label fw-bold small text-muted">5. UPLOAD PROBLEM PHOTO (OPTIONAL)</label>
+    <input type="file" name="problem_photo" accept="image/*" class="form-control mb-3">
+
+    <!-- Submit Button -->
+    <button type="submit" class="btn btn-success btn-lg w-100 fw-bold shadow-sm mt-2" style="background:#047857;">
+      <i class="bi bi-check-circle-fill me-1"></i> Confirm & Book Service Now
+    </button>
+  </form>
+</div>
+
+<script>
+  // 1. Right Side Top SweetAlert Toast Config
+  const RightToast = Swal.mixin({
+    toast: true,
+    position: 'top-end', // <--- Screen च्या उजव्या कोपऱ्यात वरती (Right Side)
+    showConfirmButton: false,
+    timer: 4000,
+    timerProgressBar: true,
+    didOpen: (toast) => {
+      toast.addEventListener('mouseenter', Swal.stopTimer);
+      toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+  });
+
+  // 2. Date Selection Handler (Next 30 Days Dynamic Range)
+  document.addEventListener("DOMContentLoaded", function() {
+    const dateInput = document.getElementById('bookingDateInput');
+    const btnToday = document.getElementById('btnToday');
+    const btnTomorrow = document.getElementById('btnTomorrow');
+
+    function formatDateToYYYYMMDD(d) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const today = new Date();
+    const todayStr = formatDateToYYYYMMDD(today);
+
+    // Calculate Tomorrow
+    const tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+    const tomorrowStr = formatDateToYYYYMMDD(tomorrow);
+
+    // Calculate 30 Days Ahead (Max limit)
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 30);
+    const maxStr = formatDateToYYYYMMDD(maxDate);
+
+    // Set min & max attributes on Date Picker
+    if (dateInput) {
+      dateInput.min = todayStr; // आजच्या आधीची तारीख निवडता येणार नाही (Disable past dates)
+      dateInput.max = maxStr;   // पुढील ३० दिवसांपुढील तारीख निवडता येणार नाही (Max 30 days)
+      dateInput.value = todayStr; // बाय डिफॉल्ट आजची तारीख सिलेक्ट असेल
+
+      // When date changes manually in calendar
+      dateInput.addEventListener('change', function() {
+        if (this.value === todayStr) {
+          if (btnToday) btnToday.classList.add('active');
+          if (btnTomorrow) btnTomorrow.classList.remove('active');
+        } else if (this.value === tomorrowStr) {
+          if (btnTomorrow) btnTomorrow.classList.add('active');
+          if (btnToday) btnToday.classList.remove('active');
+        } else {
+          if (btnToday) btnToday.classList.remove('active');
+          if (btnTomorrow) btnTomorrow.classList.remove('active');
+        }
+      });
+    }
+
+    // Shortcut: Click Today
+    if (btnToday) {
+      btnToday.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (dateInput) dateInput.value = todayStr;
+        btnToday.classList.add('active');
+        if (btnTomorrow) btnTomorrow.classList.remove('active');
+      });
+    }
+
+    // Shortcut: Click Tomorrow
+    if (btnTomorrow) {
+      btnTomorrow.addEventListener('click', function(e) {
+        e.preventDefault();
+        if (dateInput) dateInput.value = tomorrowStr;
+        btnTomorrow.classList.add('active');
+        if (btnToday) btnToday.classList.remove('active');
+      });
+    }
+  });
+
+  // 3. AJAX Booking Submission
+  document.getElementById('serviceBookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Submitting Booking...';
+    }
+
+    const formData = new FormData(this);
+    const serviceId = "{{ service.id }}";
+
+    fetch(`/book-service-api/${serviceId}/`, {
+      method: 'POST',
+      body: formData
+    })
+    .then(async res => {
+      const data = await res.json().catch(() => null);
+      if (!data) {
+        throw new Error('Invalid server response');
+      }
+      return data;
+    })
+    .then(data => {
+      if (!data.success) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalBtnHtml;
+        }
+        RightToast.fire({ icon: 'warning', title: data.message || 'Booking could not be processed.' });
+        if (data.message && data.message.toLowerCase().includes('login')) {
+          setTimeout(() => {
+            window.location.href = "{% url 'login' %}";
+          }, 2000);
+        }
+        return;
+      }
+
+      RightToast.fire({
+        icon: 'success',
+        title: data.message
+      });
+      setTimeout(() => {
+        window.location.href = "{% url 'customer_direct_bookings' %}";
+      }, 2000);
+    })
+    .catch(err => {
+      console.error('Booking submission error:', err);
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalBtnHtml;
+      }
+      RightToast.fire({ icon: 'error', title: 'Booking failed. Please check connection and try again.' });
+    });
+  });
+</script>
+
+    <!-- 7. CUSTOMER REVIEWS (SHOW LATEST 3 + VIEW ALL REVIEWS MODAL) -->
+    <div class="reviews card">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="section-heading mb-0" style="margin-bottom:0;"><span class="bar"></span>Customer reviews ({% if provider_review_count %}{{ provider_review_count }}{% else %}0{% endif %})</div>
+        {% if reviews_list %}
+          <button type="button" class="btn btn-sm btn-outline-success fw-bold rounded-pill px-3 py-1" data-bs-toggle="modal" data-bs-target="#allReviewsModal">
+            <i class="bi bi-chat-left-text me-1"></i> View All Reviews ({% if provider_review_count %}{{ provider_review_count }}{% else %}0{% endif %})
+          </button>
+        {% endif %}
+      </div>
+
+      <div style="margin-top:12px;">
+        {% if reviews_list %}
+          {% for rev in reviews_list|slice:":3" %}
+            <div class="review border-bottom pb-3 mb-3">
+              <div class="review-top d-flex justify-content-between align-items-center mb-1">
+                <div class="review-name-row d-flex align-items-center gap-2">
+                  <div class="review-avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width:38px; height:38px; background:#005c53; font-size:0.85rem;">
+                    {{ rev.customer.full_name|slice:":2"|upper }}
+                  </div>
+                  <span class="review-name fw-bold text-dark fs-6">{{ rev.customer.full_name }}</span>
+                </div>
+                <span class="review-stars text-warning fs-6">
+                  {% if rev.rating >= 5 %}★★★★★
+                  {% elif rev.rating == 4 %}★★★★☆
+                  {% elif rev.rating == 3 %}★★★☆☆
+                  {% elif rev.rating == 2 %}★★☆☆☆
+                  {% else %}★☆☆☆☆{% endif %}
+                </span>
+              </div>
+              <p class="review-comment text-secondary mb-0 ms-5" style="font-size: 0.92rem; line-height: 1.5;">{{ rev.review_text|default:"Great service, very professional and prompt!" }}</p>
+            </div>
+          {% endfor %}
+
+          {% if provider_review_count > 3 %}
+            <div class="text-center mt-3 pt-2">
+              <button type="button" class="btn btn-light border fw-bold rounded-pill px-4" style="color: #047857;" data-bs-toggle="modal" data-bs-target="#allReviewsModal">
+                Show All {{ provider_review_count }} Reviews →
+              </button>
+            </div>
+          {% endif %}
+        {% else %}
+          <div class="text-center py-4 text-muted small">
+            <i class="bi bi-star text-warning fs-3 d-block mb-2 opacity-50"></i>
+            No customer reviews submitted for this provider yet.
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- 8. RELATED SERVICES (PREMIUM SLIDER WITH HEADER NAV BUTTONS & STUNNING END CARD) -->
+    <div class="related card p-4">
+      <!-- Header Bar with Title & Nav Actions -->
+      <div class="related-header-bar">
+        <div class="section-heading mb-0" style="margin-bottom:0;"><span class="bar"></span>Related Services</div>
+        
+        <div class="related-header-actions">
+          <button class="slider-nav-btn" onclick="scrollRelated(-1)" title="Previous"><i class="bi bi-chevron-left"></i></button>
+          <button class="slider-nav-btn" onclick="scrollRelated(1)" title="Next"><i class="bi bi-chevron-right"></i></button>
+          <a href="{% url 'service' %}?cat_id={{ service.category.id }}" class="btn-view-all-pill">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Horizontal Scroll Container -->
+      <div class="related-scroll-container" id="relatedScrollContainer">
+        {% if related_services %}
+          {% for rel in related_services %}
+          <a href="{% url 'view_service' %}?service_id={{ rel.id }}" class="related-card-item">
+            <div class="rc-img-box">
+              {% if rel.service_image %}
+                <img src="{{ rel.service_image.url }}" alt="{{ rel.service_name }}">
+              {% else %}
+                <img src="https://images.unsplash.com/photo-1631545806609-c2b0dbf237c4?q=80&w=400&auto=format&fit=crop" alt="{{ rel.service_name }}">
+              {% endif %}
+              <span class="rc-category-badge">{{ rel.category.name }}</span>
+            </div>
+            <div class="rc-content">
+              <div>
+                <h5 class="rc-name">{{ rel.service_name }}</h5>
+                <div class="rc-price mt-1">From ₹{{ rel.price|floatformat:0 }}</div>
+              </div>
+              <div class="rc-provider"><i class="bi bi-person me-1"></i> {{ rel.provider_full_name }}</div>
+            </div>
+          </a>
+          {% endfor %}
+
+          <!-- Premium Explore All Services End Card -->
+          <a href="{% url 'service' %}?cat_id={{ service.category.id }}" class="related-card-item view-more-card">
+            <div class="vm-icon-glow">
+              <i class="bi bi-grid-fill"></i>
+            </div>
+            <div class="vm-title">Explore All Services</div>
+            <div class="vm-subtitle">Browse 50+ Local Experts →</div>
+          </a>
+        {% else %}
+          <p class="text-muted small my-3">No other related services available right now.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% else %}
+    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #64748b; background: #fff; border-radius: 16px;">
+      <i class="bi bi-exclamation-triangle-fill" style="font-size: 2.5rem; color: #f59e0b; display: block; margin-bottom: 12px;"></i>
+      <h3>No service found</h3>
+      <p>The requested service is not available or has been removed.</p>
+      <a href="{% url 'service' %}" class="btn btn-emerald text-white px-4 py-2 rounded-3 mt-2" style="background: #047857; text-decoration: none;">Browse All Services</a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+
+<!-- MOBILE FIXED BOOK BAR -->
+<!-- <div class="book-bar">
+  <div class="bb-price"><div class="lbl">Starting from</div><div class="val">₹{% if service %}{{ service.price|floatformat:0 }}{% else %}399{% endif %}</div></div>
+  <button class="btn-book" id="bookBtnMobile" onclick="document.querySelector('.sidebar').scrollIntoView({behavior: 'smooth'})">Book Now</button>
+</div> -->
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastText">Booking request sent!</span>
+</div>
+
+<script>
+  // Hero Media Switcher: Image
+  function showHeroImage(imgUrl, element) {
+    const container = document.getElementById('mainHeroContainer');
+    container.innerHTML = `<img id="mainImg" class="main-img" src="${imgUrl}" alt="Service Media">`;
+    
+    document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  // Hero Media Switcher: Video
+  function showHeroVideo(videoUrl, element) {
+    const container = document.getElementById('mainHeroContainer');
+    container.innerHTML = `
+      <div class="hero-video-wrapper">
+        <video class="main-video-player" controls autoplay src="${videoUrl}"></video>
+      </div>
+    `;
+    
+    document.querySelectorAll('.thumb-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+  }
+
+  // Horizontal Scroll for Related Services
+  function scrollRelated(direction) {
+    const container = document.getElementById('relatedScrollContainer');
+    const scrollAmount = 280;
+    container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+  }
+
+  // Date selection
+  let selectedDate = "Today";
+  document.querySelectorAll('.date-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.date-chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      selectedDate = c.dataset.date;
+    });
+  });
+
+  // Time slot selection
+  let selectedSlot = "11:00 – 13:00";
+  document.querySelectorAll('.slot-chip:not(.disabled)').forEach(s => {
+    s.addEventListener('click', () => {
+      document.querySelectorAll('.slot-chip').forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      selectedSlot = s.dataset.slot;
+    });
+  });
+
+  // 📍 Live Location Geolocation API Fetcher
+  function getLiveLocation() {
+    const addrInput = document.getElementById('addrInput');
+    const locBtn = document.getElementById('btnLiveLoc');
+
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    locBtn.innerHTML = '<i class="bi bi-hourglass-split me-1"></i> Fetching Live Location...';
+    locBtn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        // OpenStreetMap Reverse Geocoding
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.display_name) {
+              addrInput.value = data.display_name;
+            } else {
+              addrInput.value = `Location: ${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+            }
+            locBtn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i> Location Shared Successfully';
+            locBtn.style.background = '#10b981';
+            locBtn.style.color = '#ffffff';
+
+            setTimeout(() => {
+              locBtn.innerHTML = '<i class="bi bi-crosshair me-1"></i> Share My Live Location';
+              locBtn.style.background = '';
+              locBtn.style.color = '';
+              locBtn.disabled = false;
+            }, 3500);
+          })
+          .catch(err => {
+            addrInput.value = `Lat: ${lat.toFixed(5)}, Lon: ${lon.toFixed(5)}`;
+            locBtn.innerHTML = '<i class="bi bi-crosshair me-1"></i> Share My Live Location';
+            locBtn.disabled = false;
+          });
+      },
+      (error) => {
+        alert("Unable to retrieve location. Please type your address manually.");
+        locBtn.innerHTML = '<i class="bi bi-crosshair me-1"></i> Share My Live Location';
+        locBtn.disabled = false;
+      }
+    );
+  }
+
+  // Booking Handler
+  const toast = document.getElementById('toast');
+  const toastText = document.getElementById('toastText');
+  function handleBook(e){
+    if(e) e.preventDefault();
+    const addr = document.getElementById('addrInput').value.trim();
+    if(!addr){
+      toastText.textContent = 'Please enter your address';
+      showToast();
+      document.getElementById('addrInput').focus();
+      return false;
+    }
+    toastText.textContent = `Booking Request Sent for ${selectedDate}, ${selectedSlot}!`;
+    showToast();
+    return false;
+  }
+
+  function showToast(){
+    toast.classList.add('show');
+    clearTimeout(window._t);
+    window._t = setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+</script>
+
+<!-- ALL CUSTOMER REVIEWS MODAL -->
+<div class="modal fade" id="allReviewsModal" tabindex="-1" aria-labelledby="allReviewsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 18px; overflow: hidden;">
+      <div class="modal-header text-white" style="background: linear-gradient(135deg, #047857 0%, #022c22 100%); padding: 18px 24px;">
+        <div>
+          <h5 class="modal-title fw-bold mb-1" id="allReviewsModalLabel">
+            <i class="bi bi-star-fill text-warning me-2"></i> All Customer Reviews & Ratings
+          </h5>
+          <div class="small opacity-85">
+            ⭐ <b>{% if provider_avg_rating and provider_avg_rating > 0 %}{{ provider_avg_rating }}{% else %}New{% endif %}</b> Average Rating across <b>{% if provider_review_count %}{{ provider_review_count }}{% else %}0{% endif %} Customer Reviews</b>
+          </div>
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4" style="max-height: 480px; overflow-y: auto;">
+        {% if reviews_list %}
+          {% for rev in reviews_list %}
+            <div class="review-modal-item border-bottom pb-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width:42px; height:42px; background:#005c53; font-size:0.9rem;">
+                    {{ rev.customer.full_name|slice:":2"|upper }}
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark fs-6 mb-0">{{ rev.customer.full_name }}</div>
+                    <div class="text-muted" style="font-size:0.78rem;"><i class="bi bi-calendar-event me-1"></i> {{ rev.created_at|date:"d M Y, h:i A" }}</div>
+                  </div>
+                </div>
+                <span class="text-warning fs-5">
+                  {% if rev.rating >= 5 %}★★★★★
+                  {% elif rev.rating == 4 %}★★★★☆
+                  {% elif rev.rating == 3 %}★★★☆☆
+                  {% elif rev.rating == 2 %}★★☆☆☆
+                  {% else %}★☆☆☆☆{% endif %}
+                </span>
+              </div>
+              <div class="bg-light p-3 rounded-3 text-secondary ms-5" style="font-size:0.94rem; line-height:1.5;">
+                "{{ rev.review_text|default:'Great service, very professional and prompt!' }}"
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="text-center py-5 text-muted">
+            <i class="bi bi-chat-square-text text-secondary display-4 d-block mb-3 opacity-50"></i>
+            <h5>No Reviews Yet</h5>
+            <p class="small">This provider has not received any customer reviews yet.</p>
+          </div>
+        {% endif %}
+      </div>
+      <div class="modal-footer bg-light px-4 py-3">
+        <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'user/footer.html' %}
+
+</body>
+</html>

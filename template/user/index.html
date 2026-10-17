@@ -1,0 +1,597 @@
+{% include "user/navbar.html" %}
+
+<!-- banner code star here  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hero Banner</title>
+<style>
+  :root{
+    --ink:#0F2E2A;
+    --paper:#F7FAF9;
+    --line:rgba(15,46,42,0.10);
+    --accent:#1F7A63;
+    --accent-soft:#E6F3EF;
+    --muted:#5B6E6A;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--paper);
+  }
+
+  .btn{
+    padding:9px 18px;
+    border-radius:8px;
+    font-size:0.9rem;
+    font-weight:600;
+    text-decoration:none;
+    cursor:pointer;
+    border:none;
+    display:inline-block;
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+    white-space:nowrap;
+  }
+
+  /* ===== Hero Banner ===== */
+  .hero{
+    position:relative;
+    min-height:560px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:80px 24px;
+    background:
+      linear-gradient(180deg, rgba(9,32,29,0.72) 0%, rgba(9,32,29,0.55) 45%, rgba(9,32,29,0.85) 100%),
+      url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=1740&auto=format&fit=crop')
+      center/cover no-repeat;
+    text-align:center;
+    overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(600px 300px at 15% 15%, rgba(31,122,99,0.35), transparent 60%),
+      radial-gradient(600px 300px at 85% 85%, rgba(31,122,99,0.25), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-inner{
+    position:relative;
+    z-index:1;
+    max-width:760px;
+    margin:0 auto;
+  }
+  .hero-eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 14px;
+    border-radius:999px;
+    background:rgba(230,243,239,0.15);
+    border:1px solid rgba(255,255,255,0.25);
+    color:#E6F3EF;
+    font-size:0.8rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    margin-bottom:22px;
+    backdrop-filter:blur(4px);
+  }
+  .hero-eyebrow .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:#3FE0B0;
+    box-shadow:0 0 0 3px rgba(63,224,176,0.25);
+  }
+  .hero h1{
+    color:#fff;
+    font-size:clamp(2rem, 4.2vw, 3.2rem);
+    font-weight:700;
+    letter-spacing:-0.03em;
+    line-height:1.12;
+    margin-bottom:18px;
+  }
+  .hero h1 span{
+    color:#7BE8C8;
+  }
+  .hero p{
+    color:rgba(255,255,255,0.85);
+    font-size:1.05rem;
+    max-width:520px;
+    margin:0 auto 36px;
+    line-height:1.6;
+  }
+
+  /* Search bar */
+  .hero-search{
+    display:flex;
+    align-items:stretch;
+    background:#fff;
+    border-radius:14px;
+    padding:6px;
+    box-shadow:0 20px 40px rgba(9,32,29,0.35);
+    max-width:620px;
+    margin:0 auto 28px;
+    gap:6px;
+  }
+  .hero-search input{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:14px 16px;
+    font-size:0.95rem;
+    color:var(--ink);
+    background:transparent;
+    min-width:0;
+  }
+  .hero-search input::placeholder{
+    color:#9AA8A5;
+  }
+  .hero-search select{
+    border:none;
+    outline:none;
+    border-left:1px solid var(--line);
+    padding:14px 12px;
+    font-size:0.9rem;
+    color:var(--muted);
+    background:transparent;
+    max-width:160px;
+  }
+  .hero-search button{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:none;
+    border-radius:9px;
+    background:var(--accent);
+    color:#fff;
+    font-weight:600;
+    font-size:0.95rem;
+    padding:0 22px;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+    white-space:nowrap;
+  }
+  .hero-search button:hover{
+    background:#186952;
+    transform:translateY(-1px);
+  }
+
+  /* Hero CTA buttons */
+  .hero-ctas{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  .hero-ctas .btn{
+    padding:13px 26px;
+    font-size:0.98rem;
+    border-radius:10px;
+  }
+  .hero-ctas .btn-solid{
+    background:#fff;
+    color:var(--ink);
+  }
+  .hero-ctas .btn-solid:hover{
+    box-shadow:0 8px 20px rgba(0,0,0,0.25);
+  }
+  .hero-ctas .btn-outline{
+    background:transparent;
+    color:#fff;
+    border:1.5px solid rgba(255,255,255,0.55);
+  }
+  .hero-ctas .btn-outline:hover{
+    background:rgba(255,255,255,0.12);
+    border-color:#fff;
+  }
+
+  @media (max-width: 640px){
+    .hero{min-height:auto;padding:56px 18px;}
+    .hero-search{flex-direction:column;padding:10px;}
+    .hero-search select{border-left:none;border-top:1px solid var(--line);}
+    .hero-search button{padding:14px;justify-content:center;}
+  }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  /* ===== Popular Categories Section ===== */
+  .popular-categories-section {
+    padding: 70px 24px;
+    background: #ffffff;
+  }
+  .container-custom {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .sub-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .section-header-row h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .section-header-row p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  .btn-view-all-cats {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .btn-view-all-cats:hover {
+    background: var(--accent);
+    color: #ffffff;
+  }
+
+  .categories-grid-custom {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+  }
+  .cat-card-item {
+    display: flex;
+    flex-direction: column;
+    padding: 26px 24px;
+    background: #ffffff;
+    border: 1px solid rgba(15, 46, 42, 0.1);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .cat-card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 16px 32px rgba(15, 46, 42, 0.08);
+    border-color: var(--accent);
+  }
+  .cat-icon-box {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 18px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .cat-card-item:hover .cat-icon-box {
+    background: var(--accent);
+    color: #ffffff;
+  }
+  .cat-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .cat-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+  .cat-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+  .cat-explore-link {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .cat-card-item:hover .cat-explore-link {
+    gap: 8px;
+  }
+
+  /* ===== How It Works Section (Premium Design & Animations) ===== */
+  .how-it-works-section {
+    padding: 90px 24px;
+    background: linear-gradient(180deg, #F7FAF9 0%, #EBF4F1 100%);
+    border-top: 1px solid rgba(15, 46, 42, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .how-header-center {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 60px;
+  }
+  .how-header-center h2 {
+    font-size: clamp(2rem, 3.5vw, 2.6rem);
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+  }
+  .how-header-center p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .steps-grid-wrapper {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .step-card {
+    position: relative;
+    background: #ffffff;
+    padding: 40px 32px;
+    border-radius: 24px;
+    border: 1px solid rgba(15, 46, 42, 0.09);
+    box-shadow: 0 12px 30px rgba(15, 46, 42, 0.05);
+    transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    display: flex;
+    flex-direction: column;
+  }
+  .step-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 24px 50px rgba(31, 122, 99, 0.15);
+    border-color: var(--accent);
+  }
+
+  .step-badge-num {
+    position: absolute;
+    top: 28px;
+    right: 28px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 800;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(31, 122, 99, 0.15);
+    transition: all 0.3s ease;
+  }
+  .step-card:hover .step-badge-num {
+    background: var(--accent);
+    color: #ffffff;
+    transform: scale(1.1) rotate(6deg);
+  }
+
+  .step-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #1F7A63 0%, #0B3C30 100%);
+    color: #ffffff;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 26px;
+    box-shadow: 0 10px 24px rgba(31, 122, 99, 0.3);
+    transition: all 0.35s ease;
+  }
+  .step-card:hover .step-icon-circle {
+    transform: scale(1.08);
+    box-shadow: 0 14px 30px rgba(31, 122, 99, 0.45);
+  }
+  .step-icon-circle i {
+    transition: transform 0.35s ease;
+  }
+  .step-card:hover .step-icon-circle i {
+    transform: scale(1.15);
+  }
+
+  .step-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  .step-card p {
+    font-size: 0.96rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin: 0;
+  }
+  .step-card p strong {
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-inner">
+    <span class="hero-eyebrow"><span class="dot"></span> 10,000+ verified professionals nearby</span>
+    <h1>Find Trusted Local <span>Professionals</span></h1>
+    <p>From home repairs to personal care — book vetted, top-rated service providers near you in just a few clicks.</p>
+
+    <form class="hero-search" action="{% url 'service' %}" method="GET">
+      <input type="text" name="search" placeholder="What service are you looking for?">
+      <select name="cat_id">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}">{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">🔍 Search</button>
+    </form>
+
+    <div class="hero-ctas">
+      <a href="{% url 'service' %}" class="btn btn-solid">Book a Service</a>
+      {% if not request.session.customer_logged_in %}
+      <a href="{% url 'become_provider' %}" class="btn btn-outline">Become a Provider</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== Popular Service Categories Section ===== -->
+<section class="popular-categories-section">
+  <div class="container-custom">
+    <div class="section-header-row">
+      <div>
+        <span class="sub-badge">EXPLORE CATEGORIES</span>
+        <h2>Popular Service Categories</h2>
+        <p>Book top-rated, verified experts for all your home and personal service needs</p>
+      </div>
+      <a href="{% url 'category' %}" class="btn-view-all-cats">
+        View All Categories <i class="bi bi-arrow-right"></i>
+      </a>
+    </div>
+
+    <div class="categories-grid-custom">
+      {% if categories %}
+        {% for cat in categories %}
+          <a href="{% url 'subcategory' %}?cat_id={{ cat.id }}" class="cat-card-item">
+            <div class="cat-icon-box">
+              <i class="bi {{ cat.icon_class|default:'bi-tools' }}"></i>
+            </div>
+            <h3 class="cat-title">{{ cat.name }}</h3>
+            <p class="cat-desc">{{ cat.description|default:"Explore top experts & verified providers in this category."|truncatewords:10 }}</p>
+            <div class="cat-card-footer">
+              <span class="cat-explore-link">Browse Services <i class="bi bi-chevron-right"></i></span>
+            </div>
+          </a>
+        {% endfor %}
+      {% else %}
+        <a href="{% url 'category' %}" class="cat-card-item">
+          <div class="cat-icon-box"><i class="bi bi-lightning-charge-fill"></i></div>
+          <h3 class="cat-title">Electrical Services</h3>
+          <p class="cat-desc">Wiring, switch repairs, light installations & safety inspections.</p>
+          <div class="cat-card-footer"><span class="cat-explore-link">Browse Services <i class="bi bi-chevron-right"></i></span></div>
+        </a>
+        <a href="{% url 'category' %}" class="cat-card-item">
+          <div class="cat-icon-box"><i class="bi bi-droplet-fill"></i></div>
+          <h3 class="cat-title">Plumbing Services</h3>
+          <p class="cat-desc">Pipe leakage repair, tap fitting, drain cleaning & water tank care.</p>
+          <div class="cat-card-footer"><span class="cat-explore-link">Browse Services <i class="bi bi-chevron-right"></i></span></div>
+        </a>
+        <a href="{% url 'category' %}" class="cat-card-item">
+          <div class="cat-icon-box"><i class="bi bi-stars"></i></div>
+          <h3 class="cat-title">Cleaning Services</h3>
+          <p class="cat-desc">Deep home cleaning, sofa sanitization & bathroom care.</p>
+          <div class="cat-card-footer"><span class="cat-explore-link">Browse Services <i class="bi bi-chevron-right"></i></span></div>
+        </a>
+        <a href="{% url 'category' %}" class="cat-card-item">
+          <div class="cat-icon-box"><i class="bi bi-snow"></i></div>
+          <h3 class="cat-title">AC & Appliance Repair</h3>
+          <p class="cat-desc">AC servicing, gas charging, washing machine & fridge repair.</p>
+          <div class="cat-card-footer"><span class="cat-explore-link">Browse Services <i class="bi bi-chevron-right"></i></span></div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ===== How It Works Section (English + Animations) ===== -->
+<section class="how-it-works-section">
+  <div class="container-custom">
+    <div class="how-header-center">
+      <span class="sub-badge">⚙️ HOW IT WORKS</span>
+      <h2>How ServiceHub Works</h2>
+      <p>Book trusted local service providers or post custom jobs in 3 simple steps</p>
+    </div>
+
+    <div class="steps-grid-wrapper">
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card">
+          <div class="step-badge-num">01</div>
+          <div class="step-icon-circle">
+            <i class="bi bi-search"></i>
+          </div>
+          <h3>1. Search Service</h3>
+          <p>
+            <strong>Find the service you need.</strong>
+            Search verified local experts nearby by category, city location, or specific service name.
+          </p>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+          <div class="step-badge-num">02</div>
+          <div class="step-icon-circle">
+            <i class="bi bi-calendar2-check-fill"></i>
+          </div>
+          <h3>2. Book or Post Job</h3>
+          <p>
+            <strong>Book directly or post your budget.</strong>
+            Instantly book fixed-price services or post custom job requirements to get quick bids.
+          </p>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+          <div class="step-badge-num">03</div>
+          <div class="step-icon-circle">
+            <i class="bi bi-shield-fill-check"></i>
+          </div>
+          <h3>3. Pay After Completion</h3>
+          <p>
+            <strong>Pay only after work is done.</strong>
+            Pay securely online or cash only after the service provider completes the work to your satisfaction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'user/footer.html' %}
+
+</body>
+</html>

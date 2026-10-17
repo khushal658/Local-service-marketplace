@@ -1,0 +1,144 @@
+
+<!-- ===================== SIDEBAR (FULL HEIGHT FROM TOP: 0) ===================== -->
+<aside class="cp-sidebar" id="cpSidebar">
+  <!-- Brand Logo inside Sidebar Header -->
+  <div class="cp-sidebar-header">
+    <a href="{% url 'customer_dashboard' %}" class="cp-brand">
+      <span class="cp-brand-mark"><i class="bi bi-tools text-white"></i></span>
+      <span class="cp-brand-text">ServiceHub</span>
+    </a>
+  </div>
+
+  <div class="cp-nav-section-title">Main</div>
+  <a href="{% url 'customer_dashboard' %}" class="cp-nav-link {% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}" data-title="Dashboard">
+    <i class="bi bi-grid-1x2-fill"></i>
+    <span class="cp-nav-label">Dashboard</span>
+  </a>
+  <a href="#" class="cp-nav-link" data-title="My Bookings">
+    <i class="bi bi-calendar-check"></i>
+    <span class="cp-nav-label">My Bookings</span>
+    <span class="cp-nav-badge">2</span>
+  </a>
+  <a href="{% url 'customer_my_requests' %}" class="cp-nav-link {% if request.resolver_match.url_name == 'customer_my_requests' %}active{% endif %}" data-title="My Custom Requests">
+    <i class="bi bi-file-earmark-plus"></i>
+    <span class="cp-nav-label">My Custom Requests</span>
+  </a>
+  <a href="{% url 'service' %}" class="cp-nav-link {% if request.resolver_match.url_name == 'service' %}active{% endif %}" data-title="Find Services">
+    <i class="bi bi-search-heart"></i>
+    <span class="cp-nav-label">Find Services</span>
+  </a>
+  <a href="#" class="cp-nav-link" data-title="My Reviews">
+    <i class="bi bi-star-half"></i>
+    <span class="cp-nav-label">My Reviews</span>
+  </a>
+
+  <div class="cp-nav-section-title">Account</div>
+  <a href="#" class="cp-nav-link" data-title="Addresses">
+    <i class="bi bi-geo-alt"></i>
+    <span class="cp-nav-label">Addresses</span>
+  </a>
+  <a href="{% url 'customer_profile' %}" class="cp-nav-link {% if request.resolver_match.url_name == 'customer_profile' %}active{% endif %}" data-title="Profile Settings">
+    <i class="bi bi-person-circle"></i>
+    <span class="cp-nav-label">Profile Settings</span>
+  </a>
+  <a href="{% url 'customer_payments' %}" class="cp-nav-link {% if request.resolver_match.url_name == 'customer_payments' %}active{% endif %}" data-title="Payments & Wallet">
+    <i class="bi bi-wallet2"></i>
+    <span class="cp-nav-label">Payments &amp; Wallet</span>
+  </a>
+
+  <div class="cp-nav-section-title">Support</div>
+  <a href="#" class="cp-nav-link" data-title="Help Center">
+    <i class="bi bi-headset"></i>
+    <span class="cp-nav-label">Help Center</span>
+  </a>
+  <a href="{% url 'login' %}" class="cp-nav-link text-danger" data-title="Logout">
+    <i class="bi bi-box-arrow-right text-danger"></i>
+    <span class="cp-nav-label">Logout</span>
+  </a>
+
+  <div class="cp-sidebar-footer">
+    <p class="mb-2">Need a hand with a booking?</p>
+    <a href="#" class="cp-btn-primary w-100 justify-content-center">
+      <i class="bi bi-chat-dots"></i> Support Chat
+    </a>
+  </div>
+</aside>
+
+<div class="cp-backdrop" id="cpBackdrop"></div>
+
+<!-- ===================== TOPBAR (NEXT TO SIDEBAR) ===================== -->
+<header class="cp-topbar">
+  <div class="cp-topbar-left">
+    <div class="cp-topbar-search">
+      <i class="bi bi-search me-2 text-white-50"></i>
+      <input type="text" placeholder="Search services..." class="cp-topbar-search-input">
+    </div>
+  </div>
+
+  <div class="cp-topbar-right">
+    <!-- Toggler Button placed in Topbar Right -->
+    <button class="cp-sidebar-toggle" id="cpSidebarToggle" aria-label="Toggle sidebar" title="Toggle Sidebar">
+      <i class="bi bi-layout-sidebar-inset fs-5"></i>
+    </button>
+
+    <!-- Notification Icon with Dropdown for Customer -->
+    <div class="dropdown d-inline-block position-relative">
+      <button class="cp-topbar-icon-btn position-relative" id="custNotifDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+        <i class="bi bi-bell"></i>
+        {% if unread_notif_count %}
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 10px; margin-left: -8px;">
+            {{ unread_notif_count }}
+          </span>
+        {% else %}
+          <span class="cp-notif-dot"></span>
+        {% endif %}
+      </button>
+
+      <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 p-2 mt-2" aria-labelledby="custNotifDropdown" style="width: 320px; max-height: 380px; overflow-y: auto;">
+        <li class="px-2 py-1 fw-bold text-dark border-bottom d-flex justify-content-between align-items-center">
+          <span>Notifications</span>
+          <a href="{% url 'customer_my_requests' %}" class="small text-primary text-decoration-none">View All</a>
+        </li>
+        {% if notifications %}
+          {% for notif in notifications|slice:":5" %}
+            <li class="border-bottom py-1">
+              <a href="{% url 'customer_my_requests' %}" class="dropdown-item text-wrap p-2 rounded">
+                <div class="fw-bold small text-primary">{{ notif.title }}</div>
+                <div class="text-secondary small" style="font-size: 12px;">{{ notif.message }}</div>
+                <div class="text-muted" style="font-size: 10px;">{{ notif.created_at|date:"d M Y, h:i A" }}</div>
+              </a>
+            </li>
+          {% endfor %}
+        {% else %}
+          <li class="text-center text-muted p-3 small">No new notifications.</li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="dropdown">
+      <div class="cp-user-chip" id="userMenuDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        {% if customer.profile_photo %}
+          <img src="{{ customer.profile_photo.url }}" alt="avatar">
+        {% else %}
+          <img src="https://ui-avatars.com/api/?name={{ customer.full_name|default:'Customer'|urlencode }}&background=6366f1&color=fff" alt="avatar">
+        {% endif %}
+        <div class="d-none d-md-block">
+          <div class="cp-user-name">{{ customer.full_name|default:"Customer" }}</div>
+          <div class="cp-user-role">Customer</div>
+        </div>
+        <i class="bi bi-chevron-down text-white-50 ms-1 d-none d-md-inline"></i>
+      </div>
+      <ul class="dropdown-menu dropdown-menu-end cp-user-dropdown shadow-lg border-0 mt-2" aria-labelledby="userMenuDropdown">
+        <li class="px-3 py-2">
+          <div class="fw-bold text-dark">{{ customer.full_name|default:"Customer" }}</div>
+          <div class="text-muted small">{{ customer.email|default:"" }}</div>
+        </li>
+        <li><hr class="dropdown-divider my-1"></li>
+        <li><a class="dropdown-item py-2 fw-medium" href="{% url 'customer_profile' %}"><i class="bi bi-person me-2 text-primary"></i> My Profile</a></li>
+        <li><a class="dropdown-item py-2 fw-medium" href="#"><i class="bi bi-geo-alt me-2 text-primary"></i> Saved Addresses</a></li>
+        <li><a class="dropdown-item py-2 fw-medium" href="{% url 'customer_profile' %}"><i class="bi bi-gear me-2 text-primary"></i> Profile Settings</a></li>
+        <li><hr class="dropdown-divider my-1"></li>
+        <li><a class="dropdown-item py-2 fw-medium text-danger" href="{% url 'login' %}"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</header>

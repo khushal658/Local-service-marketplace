@@ -1,0 +1,398 @@
+{% load static %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Admin Panel Sidebar Custom Stylesheet -->
+<link rel="stylesheet" href="{% static 'admin/navbar.css' %}">
+
+<!-- Topbar Header (Fixed Top Navigation Bar) -->
+<div class="ap-topbar" id="apTopbar" style="margin_bottom:50px">
+    <div class="ap-topbar-left">
+        <button type="button" class="ap-toggle-btn" id="apToggleBtn" onclick="toggleAdminSidebar(event)" title="Toggle Navigation Sidebar">
+            <i class="bi bi-list" id="apToggleIcon"></i>
+        </button>
+        <h5 class="ap-topbar-title">Admin Dashboard</h5>
+    </div>
+
+    <div class="ap-topbar-right">
+        <!-- Notification Dropdown -->
+        <div class="ap-notif-dropdown" style="position: relative; display: inline-block;">
+            <button type="button" class="ap-icon-btn position-relative" id="adminNotifBtn" title="Notifications" style="cursor: pointer; border: none;">
+                <i class="bi bi-bell"></i>
+                {% if admin_unread_count and admin_unread_count > 0 %}
+                    <span class="ap-badge-dot bg-danger"></span>
+                {% endif %}
+            </button>
+
+            <!-- Notification Dropdown Menu -->
+            <div class="ap-notif-menu" id="adminNotifMenu" style="display: none; position: absolute; top: calc(100% + 10px); right: 0; width: 340px; background: #ffffff; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; z-index: 9999; overflow: hidden;">
+                
+                <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #0B1330; color: #fff;">
+                    <h6 class="fw-bold mb-0" style="font-size: 0.95rem;"><i class="bi bi-bell-fill me-2 text-warning"></i>Admin Notifications</h6>
+                    <a href="{% url 'admin_job_audit_list' %}" class="small text-warning text-decoration-none fw-bold">View All</a>
+                </div>
+
+                <div style="max-height: 320px; overflow-y: auto;">
+                    {% if admin_notifications %}
+                        {% for notif in admin_notifications %}
+                            <a href="{% url 'admin_job_audit_list' %}" class="d-block p-3 border-bottom text-decoration-none text-dark hover-bg-light">
+                                <div class="fw-bold text-success small mb-1">{{ notif.title }}</div>
+                                <div class="small text-secondary mb-1" style="line-height: 1.3;">{{ notif.message }}</div>
+                                <div class="text-muted" style="font-size: 0.72rem;"><i class="bi bi-clock me-1"></i>{{ notif.created_at|date:"d M Y, h:i A" }}</div>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="p-4 text-center text-muted small">
+                            <i class="bi bi-bell-slash fs-3 d-block mb-2 text-secondary opacity-50"></i>
+                            No new payment notifications.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Icon -->
+        <a href="#" class="ap-icon-btn" title="Messages">
+            <i class="bi bi-chat-dots"></i>
+        </a>
+
+        <!-- Public Website Link -->
+        <a href="{% url 'user_index' %}" class="ap-icon-btn" title="View Public Website">
+            <i class="bi bi-globe"></i>
+        </a>
+
+        <!-- Topbar Profile Photo & Dropdown Menu (Right Side) -->
+        <div class="ap-profile-dropdown" id="apProfileDropdown">
+            <button type="button" class="ap-profile-btn" id="apProfileBtn" onclick="toggleAdminProfileDropdown(event)">
+                <img src="https://ui-avatars.com/api/?name=Admin&background=6C5CE7&color=fff" alt="Admin" class="ap-avatar">
+                <span class="ap-username">Admin</span>
+                <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+            </button>
+
+            <div class="ap-menu-dropdown" id="apMenuDropdown">
+                <div class="ap-dropdown-header">
+                    <h6>Admin</h6>
+                    <small>admin@servicehub.com</small>
+                </div>
+                <div class="ap-dropdown-divider"></div>
+                <a href="#" class="ap-dropdown-item">
+                    <i class="bi bi-person"></i> My Profile
+                </a>
+                <a href="#" class="ap-dropdown-item">
+                    <i class="bi bi-gear"></i> Account Settings
+                </a>
+                <a href="{% url 'user_index' %}" class="ap-dropdown-item">
+                    <i class="bi bi-globe"></i> View Website
+                </a>
+                <div class="ap-dropdown-divider"></div>
+                <a href="{% url 'login' %}" class="ap-dropdown-item text-danger">
+                    <i class="bi bi-box-arrow-right"></i> Logout Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div class="ap-sidebar-backdrop" id="apSidebarBackdrop"></div>
+
+<!-- Sidebar Container -->
+<aside class="ap-sidebar" id="apSidebar">
+
+    <!-- Sidebar Header / Logo -->
+    <div class="ap-sidebar-header">
+        <a href="#" class="ap-logo">
+            <div class="ap-logo-icon">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <span class="ap-logo-text">Service<span>Hub Admin</span></span>
+        </a>
+    </div>
+
+    <!-- Navigation Menu List -->
+    <ul class="ap-sidebar-menu">
+
+        <div class="ap-menu-category-title">Main Menu</div>
+
+        <li>
+            <a href="{% url 'admin_dashboard' %}" class="active">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="bi bi-person-circle"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
+
+        <div class="ap-menu-category-title">Management</div>
+
+        <li>
+            <a href="#providerSubmenu" class="ap-submenu-toggle collapsed" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="providerSubmenu">
+                <i class="bi bi-person-badge"></i>
+                <span>Service Providers</span>
+                <i class="bi bi-chevron-down ap-arrow"></i>
+            </a>
+            <div class="collapse" id="providerSubmenu">
+                <ul class="ap-submenu">
+                    <li>
+                        <a href="{% url 'pending_approvals' %}">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Pending Approvals</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+
+
+
+
+
+        <li>
+            <a href="{% url 'admin_customers_list' %}">
+                <i class="bi bi-people"></i>
+                <span>Customers</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#serviceSubmenu" class="ap-submenu-toggle collapsed" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="serviceSubmenu">
+                <i class="bi bi-grid-3x3-gap"></i>
+                <span>Service Categories</span>
+                <i class="bi bi-chevron-down ap-arrow"></i>
+            </a>
+            <div class="collapse" id="serviceSubmenu">
+                <ul class="ap-submenu">
+                    <li>
+                        <a href="{% url 'service_categories' %}">
+                            <i class="bi bi-tags"></i>
+                            <span>Add Service Categories</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'categories_list' %}">
+                            <i class="bi bi-list-ul"></i>
+                            <span> Categorie list</span>
+                        </a>
+                    </li>
+
+                     <li>
+                        <a href="{% url 'subcategories_list' %}">
+                            <i class="bi bi-list-ul"></i>
+                            <span> Subcategorie list</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+
+
+
+        <li>
+            <a href="#">
+                <i class="bi bi-calendar-check"></i>
+                <span>Bookings</span>
+                <span class="ap-menu-badge">12</span>
+            </a>
+        </li>
+
+        <div class="ap-menu-category-title">Finance & Insights</div>
+
+        <li>
+            <a href="{% url 'admin_job_audit_list' %}">
+                <i class="bi bi-person-workspace"></i>
+                <span>Customer Posted Jobs</span>
+                <span class="ap-menu-badge bg-success text-white">10%</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'admin_earnings_payouts' %}">
+                <i class="bi bi-cash-stack"></i>
+                <span>Earnings & Payouts</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'admin_direct_bookings' %}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Direct Booking</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="bi bi-star-fill"></i>
+                <span>Reviews & Complaints</span>
+            </a>
+        </li>
+
+        <div class="ap-menu-category-title">System</div>
+
+        <li>
+            <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Settings</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- Sidebar Footer / Logout -->
+    <div class="ap-sidebar-footer">
+        <a href="{% url 'login' %}">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout Account</span>
+        </a>
+    </div>
+
+</aside>
+
+<!-- Bootstrap 5 JS Bundle CDN -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Interactive Sidebar & Topbar Profile JavaScript -->
+<script>
+    // Global Toggle Sidebar Handler
+    function toggleAdminSidebar(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const sidebar = document.getElementById("apSidebar");
+        const apTopbar = document.getElementById("apTopbar");
+        const mainContent = document.getElementById("apMainContent");
+        const apFooter = document.getElementById("apFooter");
+        const toggleIcon = document.getElementById("apToggleIcon");
+        const sidebarBackdrop = document.getElementById("apSidebarBackdrop");
+
+        if (!sidebar) return;
+
+        if (window.innerWidth > 991) {
+            // Desktop Collapse Toggle to Icon-Only mode
+            const isClosed = sidebar.classList.toggle("close");
+            if (apTopbar) apTopbar.classList.toggle("expand");
+            if (mainContent) mainContent.classList.toggle("expand");
+            if (apFooter) apFooter.classList.toggle("expand");
+            if (toggleIcon) {
+                toggleIcon.className = isClosed ? 'bi bi-layout-sidebar' : 'bi bi-list';
+            }
+        } else {
+            // Mobile Slide Toggle
+            const isShown = sidebar.classList.toggle("show");
+            if (sidebarBackdrop) sidebarBackdrop.classList.toggle("show");
+            if (toggleIcon) {
+                toggleIcon.className = isShown ? 'bi bi-x-lg' : 'bi bi-list';
+            }
+        }
+    }
+
+    // Global Admin Profile Dropdown Handler
+    function toggleAdminProfileDropdown(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const menuDropdown = document.getElementById("apMenuDropdown");
+        const profileDropdown = document.getElementById("apProfileDropdown");
+        
+        if (menuDropdown) {
+            menuDropdown.classList.toggle("show");
+        }
+        if (profileDropdown) {
+            profileDropdown.classList.toggle("open");
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const sidebarBackdrop = document.getElementById("apSidebarBackdrop");
+        const toggleIcon = document.getElementById("apToggleIcon");
+
+        // Explicit Submenu Click Toggle Handler
+        const submenuToggles = document.querySelectorAll(".ap-submenu-toggle");
+        submenuToggles.forEach(toggle => {
+            toggle.addEventListener("click", (e) => {
+                e.preventDefault();
+                const targetId = toggle.getAttribute("href");
+                if (targetId && targetId.startsWith("#")) {
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        const isShown = targetEl.classList.contains("show");
+                        if (isShown) {
+                            targetEl.classList.remove("show");
+                            toggle.classList.add("collapsed");
+                            toggle.setAttribute("aria-expanded", "false");
+                        } else {
+                            targetEl.classList.add("show");
+                            toggle.classList.remove("collapsed");
+                            toggle.setAttribute("aria-expanded", "true");
+                        }
+                    }
+                }
+            });
+        });
+
+        // Automatic Active Sidebar Link Highlighter & Auto-Expand Submenu
+        const currentPath = window.location.pathname.replace(/\/$/, "");
+        const sidebarLinks = document.querySelectorAll(".ap-sidebar-menu a");
+
+        sidebarLinks.forEach(link => {
+            const href = link.getAttribute("href");
+            if (href && href !== "#" && href !== "javascript:void(0)" && !href.startsWith("#")) {
+                const cleanHref = href.replace(/\/$/, "");
+                // Match if exact path matches cleanHref or path ends with cleanHref
+                if (currentPath === cleanHref || (cleanHref.length > 3 && currentPath.endsWith(cleanHref))) {
+                    sidebarLinks.forEach(l => l.classList.remove("active"));
+                    link.classList.add("active");
+                    const parentCollapse = link.closest('.collapse');
+                    if (parentCollapse) {
+                        parentCollapse.classList.add('show');
+                        const toggleBtn = document.querySelector(`[href="#${parentCollapse.id}"]`);
+                        if (toggleBtn) {
+                            toggleBtn.classList.remove('collapsed');
+                            toggleBtn.setAttribute('aria-expanded', 'true');
+                        }
+                    }
+                }
+            }
+        });
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener("click", () => {
+                const sidebar = document.getElementById("apSidebar");
+                if (sidebar) sidebar.classList.remove("show");
+                sidebarBackdrop.classList.remove("show");
+                if (toggleIcon) toggleIcon.className = 'bi bi-list';
+            });
+        }
+
+        // Admin Notification Bell Toggle
+        const adminNotifBtn = document.getElementById("adminNotifBtn");
+        const adminNotifMenu = document.getElementById("adminNotifMenu");
+        if (adminNotifBtn && adminNotifMenu) {
+            adminNotifBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isHidden = adminNotifMenu.style.display === "none" || !adminNotifMenu.style.display;
+                adminNotifMenu.style.display = isHidden ? "block" : "none";
+            });
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener("click", (e) => {
+            const profileDropdown = document.getElementById("apProfileDropdown");
+            const menuDropdown = document.getElementById("apMenuDropdown");
+            if (profileDropdown && !profileDropdown.contains(e.target)) {
+                if (menuDropdown) menuDropdown.classList.remove("show");
+                profileDropdown.classList.remove("open");
+            }
+            if (adminNotifMenu && !adminNotifMenu.contains(e.target) && adminNotifBtn && !adminNotifBtn.contains(e.target)) {
+                adminNotifMenu.style.display = "none";
+            }
+        });
+    });
+</script>

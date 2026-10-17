@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ===== ServiceHub Universal Modern Footer ===== */
+  .sh-footer {
+    background: linear-gradient(180deg, #0F2E2A 0%, #071917 100%);
+    color: #E6F3EF;
+    padding: 70px 0 24px;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    border-top: 3px solid #1F7A63;
+    position: relative;
+    z-index: 10;
+  }
+  .sh-footer a {
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .sh-footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .sh-footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 0.9fr 1.1fr 1.1fr;
+    gap: 40px;
+    margin-bottom: 50px;
+  }
+
+  /* Col 1: Brand */
+  .sh-footer-brand .footer-logo-img {
+    height: 52px;
+    width: auto;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+  .sh-footer-brand .brand-tagline {
+    color: #9AA8A5;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .sh-footer-contact-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .sh-footer-contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #C1DCD5;
+  }
+  .sh-footer-contact-list li i {
+    color: #3FE0B0;
+    font-size: 1.05rem;
+  }
+  .sh-footer-contact-list a {
+    color: #C1DCD5;
+  }
+  .sh-footer-contact-list a:hover {
+    color: #3FE0B0;
+  }
+
+  .sh-social-links {
+    display: flex;
+    gap: 10px;
+  }
+  .sh-social-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #E6F3EF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.25s ease;
+  }
+  .sh-social-icon:hover {
+    background: #1F7A63;
+    color: #ffffff;
+    border-color: #3FE0B0;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(31, 122, 99, 0.4);
+  }
+
+  /* Footer Columns Headings */
+  .sh-footer-title {
+    font-size: 1.08rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+    margin-bottom: 22px;
+    position: relative;
+    padding-bottom: 10px;
+  }
+  .sh-footer-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 32px;
+    height: 2.5px;
+    background: #3FE0B0;
+    border-radius: 2px;
+  }
+
+  .sh-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .sh-footer-links li a {
+    color: #9AA8A5;
+    font-size: 0.92rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sh-footer-links li a:hover {
+    color: #3FE0B0;
+    transform: translateX(4px);
+  }
+
+  /* Trust Badges Col 4 */
+  .sh-trust-badge-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .sh-trust-badge-item i {
+    font-size: 1.4rem;
+    color: #3FE0B0;
+    margin-top: 2px;
+  }
+  .sh-trust-badge-item .badge-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+  }
+  .sh-trust-badge-item .badge-text {
+    font-size: 0.8rem;
+    color: #9AA8A5;
+    line-height: 1.4;
+  }
+
+  /* Bottom Copyright Bar */
+  .sh-footer-bottom {
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 0.88rem;
+    color: #9AA8A5;
+  }
+  .sh-footer-bottom a {
+    color: #9AA8A5;
+  }
+  .sh-footer-bottom a:hover {
+    color: #3FE0B0;
+  }
+  .sh-legal-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  @media (max-width: 992px) {
+    .sh-footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+  }
+  @media (max-width: 600px) {
+    .sh-footer {
+      padding: 50px 0 20px;
+    }
+    .sh-footer-grid {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    .sh-footer-bottom {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+
+<footer class="sh-footer">
+  <div class="sh-footer-container">
+    <div class="sh-footer-grid">
+      
+      <!-- Col 1: Brand & Contact -->
+      <div class="sh-footer-brand">
+        <a href="{% url 'user_index' %}">
+          <img src="/static/user/service_logo.png" alt="ServiceHub Logo" class="footer-logo-img">
+        </a>
+        <p class="brand-tagline">
+          Connecting you with trusted, verified local service professionals in your city. Safe bookings & transparent pricing.
+        </p>
+
+        <ul class="sh-footer-contact-list">
+          <li>
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>Ahilyanagar (Ahmednagar), Maharashtra</span>
+          </li>
+          <li>
+            <i class="bi bi-telephone-fill"></i>
+            <a href="tel:+919623774757">+91 96237 74757</a>
+          </li>
+          <li>
+            <i class="bi bi-envelope-fill"></i>
+            <a href="mailto:support@servicehub.com">support@servicehub.com</a>
+          </li>
+        </ul>
+
+        <div class="sh-social-links">
+          <a href="#" class="sh-social-icon" title="Facebook"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="sh-social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="sh-social-icon" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          <a href="#" class="sh-social-icon" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+
+      <!-- Col 2: Quick Links -->
+      <div>
+        <h4 class="sh-footer-title">Quick Links</h4>
+        <ul class="sh-footer-links">
+          <li><a href="{% url 'user_index' %}"><i class="bi bi-chevron-right"></i> Home</a></li>
+          <li><a href="{% url 'service' %}"><i class="bi bi-chevron-right"></i> Browse Services</a></li>
+          <li><a href="{% url 'category' %}"><i class="bi bi-chevron-right"></i> All Categories</a></li>
+          <li><a href="{% url 'become_provider' %}"><i class="bi bi-chevron-right"></i> Become a Provider</a></li>
+          <li><a href="{% url 'contact' %}"><i class="bi bi-chevron-right"></i> Contact Us</a></li>
+          <li><a href="{% url 'login' %}"><i class="bi bi-chevron-right"></i> User Login</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Popular Categories -->
+      <div>
+        <h4 class="sh-footer-title">Popular Services</h4>
+        <ul class="sh-footer-links">
+          <li><a href="{% url 'service' %}"><i class="bi bi-tools"></i> Electrical Wiring & Repair</a></li>
+          <li><a href="{% url 'service' %}"><i class="bi bi-droplet-fill"></i> Plumbing & Leakage Repair</a></li>
+          <li><a href="{% url 'service' %}"><i class="bi bi-stars"></i> Deep Home Cleaning</a></li>
+          
+        </ul>
+      </div>
+
+      <!-- Col 4: Trust & Guarantee -->
+      <div>
+        <h4 class="sh-footer-title">Why ServiceHub?</h4>
+
+        <div class="sh-trust-badge-item">
+          <i class="bi bi-patch-check-fill"></i>
+          <div>
+            <div class="badge-title">100% Verified Experts</div>
+            <div class="badge-text">All service providers are background verified & admin approved.</div>
+          </div>
+        </div>
+
+        <div class="sh-trust-badge-item">
+          <i class="bi bi-shield-lock-fill"></i>
+          <div>
+            <div class="badge-title">Pay After Service</div>
+            <div class="badge-text">Pay online or cash only after the work is completed.</div>
+          </div>
+        </div>
+
+        <div class="sh-trust-badge-item">
+          <i class="bi bi-percent"></i>
+          <div>
+            <div class="badge-title">Fair Admin Rate</div>
+            <div class="badge-text">Transparent 10% platform commission with zero hidden charges.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Copyright -->
+    <div class="sh-footer-bottom">
+      <div>
+        © 2026 <strong>ServiceHub</strong> Local Marketplace. All rights reserved.
+      </div>
+      <div class="sh-legal-links">
+        <a href="#">Privacy Policy</a>
+        <span>•</span>
+        <a href="#">Terms of Service</a>
+        <span>•</span>
+        <a href="{% url 'contact' %}">Support</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

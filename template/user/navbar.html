@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Navbar</title>
+<style>
+  :root{
+    --ink:#0F2E2A;
+    --paper:#F7FAF9;
+    --line:rgba(15,46,42,0.10);
+    --accent:#1F7A63;
+    --accent-soft:#E6F3EF;
+    --muted:#5B6E6A;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--paper);
+    min-height:100vh;
+  }
+
+  .navbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 80px;
+    height:72px;
+    background:rgba(247, 250, 249, 0.98);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+    box-shadow:0 4px 20px rgba(15, 46, 42, 0.06);
+  }
+
+  @media (max-width: 1200px) {
+    .navbar {
+      padding: 0 40px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 0 20px;
+    }
+  }
+
+  /* Logo */
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:transform 0.2s ease;
+    height:100%;
+  }
+  .logo img{
+    height:46px;
+    width:auto;
+    object-fit:contain;
+    display:block;
+    margin:0;
+    padding:0;
+  }
+  .logo:hover{
+    transform:scale(1.02);
+  }
+
+  /* Desktop nav */
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    list-style:none;
+  }
+  .nav-links a{
+    position:relative;
+    display:inline-block;
+    padding:10px 16px;
+    color:var(--muted);
+    text-decoration:none;
+    font-size:0.95rem;
+    font-weight:600;
+    border-radius:8px;
+    transition:color 0.2s ease, background 0.2s ease;
+  }
+  .nav-links a::after{
+    content:"";
+    position:absolute;
+    bottom:4px;
+    left:16px;
+    right:16px;
+    height:2.5px;
+    background:var(--accent);
+    border-radius:2px;
+    opacity:0;
+    transform:scaleX(0);
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+  .nav-links a:hover{
+    color:var(--ink);
+    background:var(--line);
+  }
+  .nav-links a:hover::after{
+    opacity:0.5;
+    transform:scaleX(1);
+  }
+  .nav-links a.active{
+    color:#047857 !important;
+    background:#e7f6ec !important;
+    font-weight:700 !important;
+  }
+  .nav-links a.active::after{
+    background:#047857 !important;
+    opacity:1 !important;
+    transform:scaleX(1) !important;
+  }
+
+  /* Right side auth actions */
+  .nav-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .nav-actions .btn,
+  .navbar .btn{
+    padding:9px 20px !important;
+    border-radius:10px !important;
+    font-size:0.9rem !important;
+    font-weight:600 !important;
+    text-decoration:none !important;
+    cursor:pointer !important;
+    transition:transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease !important;
+    white-space:nowrap !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    gap:6px !important;
+    height: auto !important;
+    line-height: normal !important;
+  }
+  .nav-actions .btn-ghost,
+  .navbar .btn-ghost{
+    color:var(--ink) !important;
+    background:transparent !important;
+    border:1px solid var(--line) !important;
+  }
+  .nav-actions .btn-ghost:hover,
+  .navbar .btn-ghost:hover{
+    background:var(--line) !important;
+    border-color:rgba(15,46,42,0.2) !important;
+    color:var(--ink) !important;
+  }
+  .nav-actions .btn-solid,
+  .navbar .btn-solid{
+    color:#ffffff !important;
+    background:var(--accent) !important;
+    border:1px solid var(--accent) !important;
+    box-shadow:0 4px 12px rgba(31,122,99,0.25) !important;
+  }
+  .nav-actions .btn-solid:hover,
+  .navbar .btn-solid:hover{
+    transform:translateY(-1px) !important;
+    background:#176350 !important;
+    border-color:#176350 !important;
+    color:#ffffff !important;
+    box-shadow:0 6px 18px rgba(31,122,99,0.35) !important;
+  }
+
+  /* Dropdown & Profile Pill Button styles */
+  .profile-pill-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding: 4px 16px 4px 6px !important;
+    border-radius: 999px !important;
+    background: #ffffff !important;
+    border: 1.5px solid rgba(4, 120, 87, 0.25) !important;
+    color: #0F2E2A !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    box-shadow: 0 4px 14px rgba(15, 46, 42, 0.06) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    height: auto !important;
+  }
+  .profile-pill-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 22px rgba(4, 120, 87, 0.16) !important;
+    border-color: #047857 !important;
+    background: #f0fdf4 !important;
+  }
+  .profile-avatar-box {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .profile-avatar-box img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #047857;
+    background: #ffffff;
+    box-shadow: 0 2px 6px rgba(4, 120, 87, 0.2);
+    display: block;
+  }
+  .profile-online-dot {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 9.5px;
+    height: 9.5px;
+    background: #10b981;
+    border: 1.5px solid #ffffff;
+    border-radius: 50%;
+  }
+  .profile-name-text {
+    color: #0F2E2A;
+    font-weight: 700;
+    max-width: 130px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+  }
+  .profile-chevron-icon {
+    font-size: 0.75rem;
+    color: #047857;
+    transition: transform 0.25s ease;
+  }
+  .nav-dropdown:hover .profile-chevron-icon,
+  .nav-dropdown.show .profile-chevron-icon {
+    transform: rotate(180deg);
+  }
+
+  .nav-dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  .dropdown-menu-custom {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid rgba(15, 46, 42, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 16px 40px rgba(15, 46, 42, 0.14);
+    min-width: 240px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 250;
+    animation: fadeInDown 0.2s ease;
+  }
+  .dropdown-user-header {
+    padding: 12px 14px;
+    background: linear-gradient(135deg, #f8fafc 0%, #e6f3ef 100%);
+    border-radius: 12px 12px 6px 6px;
+    border-bottom: 1px solid rgba(15, 46, 42, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .dh-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #047857;
+    box-shadow: 0 2px 8px rgba(4,120,87,0.15);
+  }
+  .dh-details {
+    line-height: 1.25;
+    overflow: hidden;
+  }
+  .dh-name {
+    font-weight: 700;
+    color: #0F2E2A;
+    font-size: 0.92rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 145px;
+  }
+  .dh-role-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #047857;
+    background: #ffffff;
+    border: 1px solid rgba(4, 120, 87, 0.25);
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 3px;
+  }
+  .nav-dropdown:hover .dropdown-menu-custom,
+  .dropdown-menu-custom.show {
+    display: flex;
+  }
+  .dropdown-item-custom {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .dropdown-item-custom:hover {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile toggle */
+  .menu-toggle{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:6px;
+  }
+  .menu-toggle span{
+    width:22px;
+    height:2px;
+    background:var(--ink);
+    border-radius:2px;
+    transition:transform 0.25s ease, opacity 0.25s ease;
+  }
+  .menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+  .menu-toggle.open span:nth-child(2){opacity:0;}
+  .menu-toggle.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+
+  /* ===== Responsive ===== */
+  @media (max-width: 860px){
+    .nav-links{
+      position:fixed;
+      top:72px;
+      left:0;
+      right:0;
+      flex-direction:column;
+      align-items:stretch;
+      background:var(--paper);
+      border-bottom:1px solid var(--line);
+      padding:8px 16px 16px;
+      gap:2px;
+      transform:translateY(-12px);
+      opacity:0;
+      pointer-events:none;
+      transition:transform 0.25s ease, opacity 0.2s ease;
+    }
+    .nav-links.show{
+      transform:translateY(0);
+      opacity:1;
+      pointer-events:auto;
+    }
+    .nav-links a{
+      padding:12px 14px;
+      width:100%;
+    }
+    .nav-actions{
+      position:fixed;
+      top:calc(72px + 340px);
+      left:0;right:0;
+      display:none;
+    }
+    .nav-actions.show-mobile{
+      display:flex;
+      flex-direction:column;
+      background:var(--paper);
+      padding:0 16px 16px;
+      gap:8px;
+      border-bottom:1px solid var(--line);
+    }
+    .nav-actions.show-mobile .btn{
+      width:100%;
+      text-align:center;
+    }
+    .dropdown-menu-custom {
+      position: static;
+      box-shadow: none;
+      border: 1px solid var(--line);
+      width: 100%;
+    }
+    .menu-toggle{display:flex;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="{% url 'user_index' %}" class="logo">
+    <img src="/static/user/service_logo.png" alt="ServiceHub Logo">
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+     <li>
+        <a href="{% url 'user_index' %}"
+           class="{% if request.resolver_match.url_name == 'user_index' %}active{% endif %}">
+            Home
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'service' %}"
+           class="{% if request.resolver_match.url_name == 'service' or request.resolver_match.url_name == 'view_service' %}active{% endif %}">
+            Services
+        </a>
+    </li>
+
+    <li>
+        <a href="{% url 'category' %}"
+           class="{% if request.resolver_match.url_name == 'category' or request.resolver_match.url_name == 'subcategory' %}active{% endif %}">
+            Categories
+        </a>
+    </li>
+
+    {% if not request.session.customer_logged_in %}
+    <li>
+        <a href="{% url 'become_provider' %}"
+           class="{% if request.resolver_match.url_name == 'become_provider' %}active{% endif %}">
+            Become a Provider
+        </a>
+    </li>
+    {% endif %}
+
+     <li>
+        <a href="{% url 'contact' %}"
+           class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+           Contact
+        </a>
+    </li>
+  </ul>
+
+  <div class="nav-actions" id="navActions">
+    {% if request.session.customer_logged_in %}
+      <!-- Customer Notification Bell Dropdown -->
+      <div class="nav-dropdown position-relative me-2" id="customerNotifDropdown">
+        <button class="profile-pill-btn d-flex align-items-center justify-content-center p-0 position-relative" id="customerNotifBtn" type="button" title="Notifications" style="width: 42px; height: 42px; border-radius: 50%; background: #e7f6ec; border: 1.5px solid rgba(4,120,87,0.25); color: #047857; cursor: pointer;">
+          <i class="bi bi-bell-fill fs-6"></i>
+          {% if customer_unread_count and customer_unread_count > 0 %}
+            <span id="customerNotifBadge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-white" style="font-size: 0.65rem; padding: 3px 6px;">
+              {{ customer_unread_count }}
+            </span>
+          {% endif %}
+        </button>
+
+        <div class="dropdown-menu-custom shadow-lg" id="customerNotifMenu" style="width: 320px; right: 0; left: auto; padding: 0; overflow: hidden; border-radius: 14px; border: 1px solid #e2e8f0;">
+          <div class="p-3 border-bottom d-flex justify-content-between align-items-center" style="background: #047857; color: #fff;">
+            <h6 class="fw-bold mb-0 text-white" style="font-size: 0.92rem;"><i class="bi bi-bell-fill me-2 text-warning"></i>Notifications</h6>
+            <a href="{% url 'customer_direct_bookings' %}" class="small text-white text-decoration-underline" style="font-size: 0.75rem;">View Bookings</a>
+          </div>
+          <div style="max-height: 320px; overflow-y: auto;">
+            {% if customer_notifications %}
+              {% for notif in customer_notifications %}
+                <a href="{% url 'customer_direct_bookings' %}" class="p-3 border-bottom text-decoration-none d-block {% if not notif.is_read %}bg-light{% else %}bg-white{% endif %} hover-bg-light">
+                  <div class="fw-bold text-dark small mb-1">{{ notif.title }}</div>
+                  <div class="text-secondary small mb-1" style="line-height: 1.35; font-size: 0.8rem;">{{ notif.message }}</div>
+                  <div class="text-muted" style="font-size: 0.7rem;"><i class="bi bi-clock me-1"></i>{{ notif.created_at|date:"d M, h:i A" }}</div>
+                </a>
+              {% endfor %}
+            {% else %}
+              <div class="p-4 text-center text-muted small">
+                <i class="bi bi-bell-slash fs-4 d-block mb-2 opacity-50"></i>
+                No notifications yet.
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Customer Logged In Dropdown -->
+      <div class="nav-dropdown" id="customerNavDropdown">
+        <button class="profile-pill-btn" id="customerDropdownBtn" type="button">
+          <div class="profile-avatar-box">
+            {% if customer_photo or request.session.customer_photo %}
+              <img src="{{ customer_photo|default:request.session.customer_photo }}" alt="Profile Photo">
+            {% else %}
+              <img src="https://ui-avatars.com/api/?name={{ request.session.customer_name|default:'User'|urlencode }}&background=E6F3EF&color=047857&bold=true&rounded=true" alt="Profile Photo">
+            {% endif %}
+            <span class="profile-online-dot"></span>
+          </div>
+          <span class="profile-name-text">{{ request.session.customer_name|default:"My Account" }}</span>
+          <i class="bi bi-chevron-down profile-chevron-icon"></i>
+        </button>
+
+        <div class="dropdown-menu-custom" id="customerDropdownMenu">
+          <div class="dropdown-user-header">
+            {% if customer_photo or request.session.customer_photo %}
+              <img src="{{ customer_photo|default:request.session.customer_photo }}" class="dh-avatar" alt="Profile Photo">
+            {% else %}
+              <img src="https://ui-avatars.com/api/?name={{ request.session.customer_name|default:'User'|urlencode }}&background=047857&color=ffffff&bold=true&rounded=true" class="dh-avatar" alt="Profile Photo">
+            {% endif %}
+            <div class="dh-details">
+              <div class="dh-name">{{ request.session.customer_name }}</div>
+              <span class="dh-role-badge"><i class="bi bi-person-check-fill me-1"></i> Customer</span>
+            </div>
+          </div>
+          <a href="{% url 'customer_direct_bookings' %}" class="dropdown-item-custom py-2">
+            <i class="bi bi-calendar2-check-fill text-success fs-6"></i> Direct Bookings
+          </a>
+          <hr class="my-1 opacity-10">
+          <a href="{% url 'customer_my_requests' %}" class="dropdown-item-custom py-2">
+            <i class="bi bi-pencil-square text-primary fs-6"></i> Custom Post Requests
+          </a>
+          <a href="{% url 'customer_payments' %}" class="dropdown-item-custom">
+            <i class="bi bi-wallet2 text-success"></i> My Payments & Receipts
+          </a>
+          <a href="{% url 'customer_profile' %}" class="dropdown-item-custom">
+            <i class="bi bi-person-lines-fill text-info"></i> Edit Profile
+          </a>
+          <hr class="my-1 opacity-25">
+          <a href="{% url 'customer_logout' %}" class="dropdown-item-custom text-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        </div>
+      </div>
+
+    {% elif request.session.provider_logged_in %}
+      <!-- Provider Logged In Dropdown -->
+      <div class="nav-dropdown" id="providerNavDropdown">
+        <button class="profile-pill-btn provider-pill-btn" id="providerDropdownBtn" type="button">
+          <div class="profile-avatar-box">
+            {% if provider_photo or request.session.provider_photo %}
+              <img src="{{ provider_photo|default:request.session.provider_photo }}" alt="Provider Photo">
+            {% else %}
+              <img src="https://ui-avatars.com/api/?name={{ request.session.provider_name|default:'Provider'|urlencode }}&background=FEF3C7&color=92400E&bold=true&rounded=true" alt="Provider Photo">
+            {% endif %}
+            <span class="profile-online-dot"></span>
+          </div>
+          <span class="profile-name-text">Partner Portal</span>
+          <i class="bi bi-chevron-down profile-chevron-icon"></i>
+        </button>
+
+        <div class="dropdown-menu-custom" id="providerDropdownMenu">
+          <div class="dropdown-user-header">
+            {% if provider_photo or request.session.provider_photo %}
+              <img src="{{ provider_photo|default:request.session.provider_photo }}" class="dh-avatar" alt="Provider Photo">
+            {% else %}
+              <img src="https://ui-avatars.com/api/?name={{ request.session.provider_name|default:'Provider'|urlencode }}&background=092b23&color=ffffff&bold=true&rounded=true" class="dh-avatar" alt="Provider Photo">
+            {% endif %}
+            <div class="dh-details">
+              <div class="dh-name">{{ request.session.provider_name|default:"Service Partner" }}</div>
+              <span class="dh-role-badge" style="color: #92400e; border-color: rgba(146, 64, 14, 0.25);"><i class="bi bi-patch-check-fill me-1"></i> Verified Provider</span>
+            </div>
+          </div>
+          <a href="{% url 'provider_dashboard' %}" class="dropdown-item-custom">
+            <i class="bi bi-speedometer2 text-success"></i> Provider Dashboard
+          </a>
+          <a href="{% url 'my_services' %}" class="dropdown-item-custom">
+            <i class="bi bi-tools text-primary"></i> My Services
+          </a>
+          <a href="{% url 'provider_job_leads' %}" class="dropdown-item-custom">
+            <i class="bi bi-bell-fill text-warning"></i> Job Leads
+          </a>
+          <a href="{% url 'provider_profile_update' %}" class="dropdown-item-custom">
+            <i class="bi bi-person-gear text-info"></i> Profile Settings
+          </a>
+          <hr class="my-1 opacity-25">
+          <a href="{% url 'provider_logout' %}" class="dropdown-item-custom text-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </a>
+        </div>
+      </div>
+
+    {% else %}
+      <!-- Guest / Logged Out State -->
+      <a href="{% url 'login' %}" class="btn btn-ghost">Login</a>
+
+      <!-- Register Dropdown -->
+      <div class="nav-dropdown" id="registerNavDropdown">
+        <button class="btn btn-solid" id="registerDropdownBtn" type="button">
+          Register <i class="bi bi-chevron-down" style="font-size: 0.8rem;"></i>
+        </button>
+
+        <div class="dropdown-menu-custom" id="registerDropdownMenu">
+          <a href="{% url 'customer_register' %}" class="dropdown-item-custom">
+            <i class="bi bi-person-fill"></i> Customer Register
+          </a>
+          <a href="{% url 'become_provider' %}#registerSection" class="dropdown-item-custom">
+            <i class="bi bi-briefcase-fill"></i> Service Provider Register
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const navLinksEl = document.getElementById('navLinks');
+  const navActionsEl = document.getElementById('navActions');
+  const registerDropdownBtn = document.getElementById('registerDropdownBtn');
+  const registerDropdownMenu = document.getElementById('registerDropdownMenu');
+  const customerDropdownBtn = document.getElementById('customerDropdownBtn');
+  const customerDropdownMenu = document.getElementById('customerDropdownMenu');
+  const providerDropdownBtn = document.getElementById('providerDropdownBtn');
+  const providerDropdownMenu = document.getElementById('providerDropdownMenu');
+
+  const links = document.querySelectorAll('.nav-links a');
+
+  links.forEach(link => {
+      link.addEventListener('click', () => {
+          links.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+
+          navLinksEl.classList.remove('show');
+          navActionsEl.classList.remove('show-mobile');
+          menuToggle.classList.remove('open');
+      });
+  });
+
+  menuToggle.addEventListener('click', () => {
+      menuToggle.classList.toggle('open');
+      navLinksEl.classList.toggle('show');
+      navActionsEl.classList.toggle('show-mobile');
+  });
+
+  // Toggle Dropdowns on click
+  function setupDropdown(btn, menu) {
+      if (btn && menu) {
+          btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              menu.classList.toggle('show');
+          });
+          document.addEventListener('click', () => {
+              menu.classList.remove('show');
+          });
+      }
+  }
+
+  const customerNotifBtn = document.getElementById('customerNotifBtn');
+  const customerNotifMenu = document.getElementById('customerNotifMenu');
+
+  if (customerNotifBtn && customerNotifMenu) {
+      customerNotifBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          customerNotifMenu.classList.toggle('show');
+
+          const badge = document.getElementById('customerNotifBadge');
+          if (badge && badge.style.display !== 'none') {
+              badge.style.display = 'none';
+              customerNotifMenu.querySelectorAll('.bg-light').forEach(el => {
+                  el.classList.remove('bg-light');
+                  el.classList.add('bg-white');
+              });
+              fetch("{% url 'mark_customer_notifications_read' %}", {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              }).catch(err => console.log('Error marking customer notifs read:', err));
+          }
+      });
+      document.addEventListener('click', () => {
+          customerNotifMenu.classList.remove('show');
+      });
+  }
+
+  setupDropdown(registerDropdownBtn, registerDropdownMenu);
+  setupDropdown(customerDropdownBtn, customerDropdownMenu);
+  setupDropdown(providerDropdownBtn, providerDropdownMenu);
+
+  // ===== Universal Scroll Reveal Animation Observer across All Pages =====
+  document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('loaded');
+
+      const revealElements = document.querySelectorAll(
+          '[data-reveal], .card, .info-card, .why-card, .trade-card, .service-card, .step-item, .benefit-card, .req-card, .form-section-block, .contact-form-card, .map-card, .faq-item, .category-card-custom'
+      );
+
+      const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+              if (entry.isIntersecting) {
+                  setTimeout(() => {
+                      entry.target.classList.add('in-view');
+                  }, index * 40); // Subtle stagger effect
+              }
+          });
+      }, { threshold: 0.05 });
+
+      revealElements.forEach(el => observer.observe(el));
+  });
+</script>
+
+<style>
+  /* Universal Scroll-Reveal & Entrance Animation Engine */
+  [data-reveal], 
+  .card, 
+  .info-card, 
+  .why-card, 
+  .trade-card, 
+  .service-card, 
+  .step-item, 
+  .benefit-card, 
+  .req-card, 
+  .form-section-block, 
+  .contact-form-card, 
+  .map-card, 
+  .faq-item,
+  .category-card-custom {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .in-view, 
+  [data-reveal].in-view,
+  body.loaded .hero-inner,
+  body.loaded .page-banner-inner {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+</style>
+
+</body>
+</html>

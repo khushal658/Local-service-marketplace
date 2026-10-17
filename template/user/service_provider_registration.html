@@ -1,0 +1,854 @@
+{% load static %}
+{% include 'user/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Become a Service Provider - Local Service Marketplace</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'user/service_provider_register.css' %}">
+</head>
+<body>
+
+    <!-- ===== 1. Hero Section (Top Banner) ===== -->
+    <section class="provider-hero">
+        <div class="hero-inner">
+            <div class="hero-badge-row">
+                <span class="hero-ticket-num">⚡ Join 10,000+ Verified Service Partners</span>
+            </div>
+
+            <h1>BECOME A <span class="highlight">SERVICE PROVIDER</span></h1>
+            <p>Join our platform, connect with local verified households, and double your monthly business income.</p>
+
+            <div class="hero-btns">
+                <button class="btn-hero-primary" id="heroRegisterBtn">
+                    Register Now <i class="bi bi-arrow-right-short"></i>
+                </button>
+                <a href="#whyJoinSection" class="btn-hero-secondary">
+                    Learn More
+                </a>
+            </div>
+
+            <!-- Live Stats Banner Row -->
+            <div class="hero-stats-row">
+                <div class="stat-item">
+                    <h3>₹45,000+</h3>
+                    <p>Avg Monthly Earnings</p>
+                </div>
+                <div class="stat-item">
+                    <h3>4.9 ★</h3>
+                    <p>Customer Satisfaction</p>
+                </div>
+                <div class="stat-item">
+                    <h3>0%</h3>
+                    <p>Hidden Joining Fees</p>
+                </div>
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Direct Payouts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 2. Why Join Our Platform? ===== -->
+    <section class="why-join-section" id="whyJoinSection">
+        <div class="section-header">
+            <span class="eyebrow-tag">Partner Perks</span>
+            <h2>Why Join Our Platform?</h2>
+            <p>Everything you need to scale your local service business with confidence</p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-card">
+                <div class="why-icon">👥</div>
+                <h3>Get More Customers</h3>
+                <p>Gain access to thousands of local verified households looking for daily home services.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">💰</div>
+                <h3>Increase Your Income</h3>
+                <p>Set your own competitive service prices and maximize your earnings with zero hidden commissions.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">⭐</div>
+                <h3>Build Your Reputation</h3>
+                <p>Collect authentic customer ratings & reviews to stand out as a trusted local professional.</p>
+            </div>
+            <div class="why-card">
+                <div class="why-icon">📅</div>
+                <h3>Flexible Working Hours</h3>
+                <p>Be your own boss. Accept bookings according to your preferred schedule and location.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 3. How It Works? ===== -->
+    <section class="how-it-works-section">
+        <div class="section-header">
+            <span class="eyebrow-tag">Simple Process</span>
+            <h2>How It Works?</h2>
+            <p>6 simple steps to start receiving bookings and growing your business</p>
+        </div>
+
+        <div class="steps-flow">
+            <div class="step-item">
+                <div class="step-num-badge">1</div>
+                <h4>Register</h4>
+                <p>Sign up via quick popup</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num-badge">2</div>
+                <h4>Admin Verification</h4>
+                <p>Quick ID & skill check</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num-badge">3</div>
+                <h4>Setup Profile</h4>
+                <p>Add photo, bio & city</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num-badge">4</div>
+                <h4>List Services</h4>
+                <p>Set your service rates</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num-badge">5</div>
+                <h4>Get Bookings</h4>
+                <p>Receive local alerts</p>
+            </div>
+            <div class="step-item">
+                <div class="step-num-badge">6</div>
+                <h4>Direct Payouts</h4>
+                <p>Fast bank transfers</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 4. Who Can Join? (Trades Grid) ===== -->
+    <section class="who-can-join-section">
+        <div class="section-header">
+            <span class="eyebrow-tag">Open Categories</span>
+            <h2>Who Can Join?</h2>
+            <p>We welcome skilled professionals across all local home service categories</p>
+        </div>
+
+        <div class="trades-grid">
+            <div class="trade-card">
+                <div class="trade-emoji">⚡</div>
+                <div class="trade-info">
+                    <h4>Electrician</h4>
+                    <p>Wiring, Switches & Appliance Setup</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">🚰</div>
+                <div class="trade-info">
+                    <h4>Plumber</h4>
+                    <p>Pipes, Tap Repair & Sanitary</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">🪚</div>
+                <div class="trade-info">
+                    <h4>Carpenter</h4>
+                    <p>Furniture, Locks & Woodwork</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">🎨</div>
+                <div class="trade-info">
+                    <h4>Painter</h4>
+                    <p>Wall Paint & Waterproofing</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">❄️</div>
+                <div class="trade-info">
+                    <h4>AC Technician</h4>
+                    <p>AC Service, Repair & Gas Refill</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">🧹</div>
+                <div class="trade-info">
+                    <h4>Cleaner</h4>
+                    <p>Deep House & Kitchen Clean</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">💇</div>
+                <div class="trade-info">
+                    <h4>Beautician</h4>
+                    <p>Salon & Spa at Home</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">🔧</div>
+                <div class="trade-info">
+                    <h4>Appliance Repair</h4>
+                    <p>Fridge, Washing Machine & TV</p>
+                </div>
+            </div>
+            <div class="trade-card">
+                <div class="trade-emoji">📷</div>
+                <div class="trade-info">
+                    <h4>CCTV Technician</h4>
+                    <p>Security & Camera Fittings</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 5. Provider Benefits ===== -->
+    <section class="benefits-section">
+        <div class="section-header">
+            <span class="eyebrow-tag">Exclusive Benefits</span>
+            <h2>Provider Benefits</h2>
+            <p>Enjoy exclusive perks designed to support independent service professionals</p>
+        </div>
+
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Zero Joining Fee</h4>
+                    <p>No upfront registration, subscription, or hidden profile creation fee.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Easy Booking Management</h4>
+                    <p>Accept, reschedule, or manage customer jobs with a single click.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Direct Customer Calling</h4>
+                    <p>Directly call or message customers after a booking is confirmed.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Secure Weekly Payouts</h4>
+                    <p>Get timely digital earnings deposited straight to your bank account.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Star Ratings & Reviews</h4>
+                    <p>Build trust with star ratings that boost your profile visibility.</p>
+                </div>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-check"><i class="bi bi-check-lg"></i></div>
+                <div class="benefit-text">
+                    <h4>Professional Dashboard</h4>
+                    <p>Track job history, daily earnings, and customer insights in real-time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 6. Requirements ===== -->
+    <section class="requirements-section">
+        <div class="req-container">
+            <div class="section-header" style="color: #ffffff;">
+                <span class="eyebrow-tag" style="background: rgba(45, 179, 145, 0.15); color: #7BE8C8; border-color: rgba(45, 179, 145, 0.3);">Checklist</span>
+                <h2 style="color: #ffffff;">What You Need to Start</h2>
+                <p style="color: rgba(255,255,255,0.75);">Requirements to register as a partner</p>
+            </div>
+
+            <div class="req-grid">
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-phone-fill"></i></div>
+                    <div class="req-info"><h4>Valid Mobile Number</h4><p>For booking alerts & OTP login</p></div>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-envelope-fill"></i></div>
+                    <div class="req-info"><h4>Valid Email Address</h4><p>For account updates & receipts</p></div>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-card-heading"></i></div>
+                    <div class="req-info"><h4>Government ID Proof</h4><p>Aadhar Card / PAN / Driving License</p></div>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-tools"></i></div>
+                    <div class="req-info"><h4>Service Skills</h4><p>Expertise in chosen trade category</p></div>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-award-fill"></i></div>
+                    <div class="req-info"><h4>Prior Experience</h4><p>1+ years of service work experience</p></div>
+                </div>
+                <div class="req-card">
+                    <div class="req-icon"><i class="bi bi-geo-alt-fill"></i></div>
+                    <div class="req-info"><h4>Service City / Area</h4><p>Selected city or area pincodes</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 7. CTA Section ===== -->
+    <section class="cta-section" id="registerSection">
+        <div class="cta-box">
+            <h2>Ready to Grow Your Business?</h2>
+            <p>Join thousands of local service professionals today and start getting instant customer bookings.</p>
+            <button class="btn-become-provider" id="openRegistrationBtn">
+                Become a Partner Now <i class="bi bi-arrow-right-circle-fill"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- ==========================================================
+         POPUP REGISTRATION MODAL (MULTI-STEP WIZARD WITH NATIVE HTML5 VALIDATION)
+         ========================================================== -->
+    <div class="sp-modal-backdrop" id="spModalBackdrop">
+        <div class="sp-popup-card">
+            <!-- Close Button -->
+            <button class="sp-modal-close-btn" id="closeModalBtn" title="Close Registration">&times;</button>
+
+            <!-- Modal Header -->
+            <div class="sp-modal-header">
+                <h3>Partner Registration</h3>
+                <p>Join our network of verified local service professionals</p>
+            </div>
+
+            <!-- Wizard Progress Nodes -->
+            <div class="wizard-progress-bar">
+                <div class="wizard-progress-line" id="wizardProgressLine"></div>
+
+                <div class="wizard-step-node active" id="node1">
+                    <div class="node-circle">1</div>
+                    <span class="node-label">Email OTP</span>
+                </div>
+
+                <div class="wizard-step-node" id="node2">
+                    <div class="node-circle">2</div>
+                    <span class="node-label">Details</span>
+                </div>
+
+                <div class="wizard-step-node" id="node3">
+                    <div class="node-circle">3</div>
+                    <span class="node-label">Location & Security</span>
+                </div>
+            </div>
+
+            <!-- Modal Body (Form Steps) -->
+            <div class="sp-modal-body">
+                <form id="providerWizardForm" action="{% url 'provider_register' %}" method="POST"  enctype="multipart/form-data" onsubmit="event.preventDefault(); ">
+                    {% csrf_token %}
+                    <!-- STEP 1: Email & OTP Verification -->
+                    <div class="wizard-step-panel active" id="stepPanel1">
+                        <div class="form-control-wrap">
+                            <label><i class="bi bi-envelope-fill" style="color: var(--accent);"></i> Email Address *</label>
+                            <div class="email-input-btn-group">
+                                <input type="email" id="providerEmail" name="email" placeholder="name@example.com" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Please enter a valid email address with @ and domain name (e.g. name@gmail.com)">
+                                <button type="button" class="btn-otp-send" id="providerSendOtpBtn">Send OTP</button>
+                            </div>
+                            <span class="otp-status-msg" id="providerOtpStatus"></span>
+                        </div>
+
+                        <!-- OTP Input Group (Hidden until Send OTP) -->
+                        <div class="form-control-wrap" id="providerOtpWrap" style="display: none;">
+                            <label><i class="bi bi-key-fill" style="color: var(--accent);"></i> Enter 6-Digit Email OTP *</label>
+                            <div class="otp-input-btn-group">
+                                <input type="text" id="providerOtpInput" pattern="[0-9]{6}" maxlength="6" minlength="6" placeholder="Enter 6-digit OTP" title="Please enter 6-digit OTP">
+                                <button type="button" class="btn-otp-verify" id="providerVerifyOtpBtn">Verify OTP</button>
+                            </div>
+                        </div>
+
+                        <div class="wizard-footer-btns">
+                            <button type="button" class="btn-wizard-next" id="btnStep1Next" disabled>
+                                Next Step <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Personal & Business Details -->
+                    <div class="wizard-step-panel" id="stepPanel2">
+                        <div class="form-group-row">
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-person-fill" style="color: var(--accent);"></i> Full Name *</label>
+                                <input type="text" id="fullNameInput" name="full_name" placeholder="Enter your full name" required minlength="3">
+                            </div>
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-shop" style="color: var(--accent);"></i> Business / Shop Name *</label>
+                                <input type="text" id="businessNameInput" name="business_name" placeholder="e.g. Ramesh Electricals" required>
+                            </div>
+                        </div>
+
+                        <div class="form-control-wrap">
+                            <label><i class="bi bi-grid-fill" style="color: var(--accent);"></i> Service Category *</label>
+                            <select id="providerCategorySelect" name="category" required>
+                                <option value="">Select Service Category</option>
+                                {% for cat in categories %}
+                                    <option value="{{ cat.name }}">{{ cat.name }}</option>
+                                {% endfor %}
+                                <option value="other">Other Category</option>
+                            </select>
+                        </div>
+
+                        <!-- Dynamic Other Category Field -->
+                        <div class="form-control-wrap" id="otherCategoryWrap" style="display: none;">
+                            <label><i class="bi bi-pencil-square" style="color: var(--accent);"></i> Specify Other Category *</label>
+                            <input type="text" id="otherCategoryInput" name="other_category" placeholder="Enter your custom service category">
+                        </div>
+
+                        <div class="wizard-footer-btns">
+                            <button type="button" class="btn-wizard-prev" id="btnStep2Prev">Back</button>
+                            <button type="button" class="btn-wizard-next" id="btnStep2Next">
+                                Next Step <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Contact, Location & Security -->
+                    <div class="wizard-step-panel" id="stepPanel3">
+                        <div class="form-group-row">
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-telephone-fill" style="color: var(--accent);"></i> Mobile Number *</label>
+                                <input type="tel" id="mobileInput" name="mobile" placeholder="10-digit mobile number" required pattern="[0-9]{10}" maxlength="10" minlength="10" title="Please enter a valid 10-digit mobile number">
+                            </div>
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-geo-alt-fill" style="color: var(--accent);"></i> Service City / Area *</label>
+                                <input type="text" id="cityInput" name="city_area" placeholder="e.g. Pune, Kothrud" required>
+                            </div>
+                        </div>
+
+                        <div class="form-control-wrap">
+                            <label><i class="bi bi-mailbox" style="color: var(--accent);"></i> Area Pincode *</label>
+                            <input type="text" id="pincodeInput" name="pincode" placeholder="6-digit Pincode (e.g. 411038)" required pattern="[0-9]{6}" maxlength="6" minlength="6">
+                        </div>
+
+                        <div class="form-control-wrap">
+                            <label><i class="bi bi-award-fill" style="color: var(--accent);"></i> Years of Experience *</label>
+                            <select id="experienceSelect" name="experience" required>
+                                <option value="">Select Experience</option>
+                                <option value="0-1">Fresh / Less than 1 year</option>
+                                <option value="1-3">1 - 3 Years</option>
+                                <option value="3-5">3 - 5 Years</option>
+                                <option value="5+">5+ Years</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group-row">
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-lock-fill" style="color: var(--accent);"></i> Password *</label>
+                                <input type="password" id="passwordInput" name="password" placeholder="Create strong password" required minlength="6">
+                            </div>
+                            <div class="form-control-wrap">
+                                <label><i class="bi bi-shield-lock-fill" style="color: var(--accent);"></i> Confirm Password *</label>
+                                <input type="password" id="confirmPasswordInput" name="confirm_password" placeholder="Re-enter password" required minlength="6">
+                            </div>
+                        </div>
+
+                        <div class="form-control-wrap">
+
+                            <label>
+                                <i
+                                    class="bi bi-image-fill"
+                                    style="color: var(--accent);"
+                                ></i>
+
+                                Profile Image
+                            </label>
+
+                            <input
+                                type="file"
+                                id="profileImageInput"
+                                name="profile_image"
+                                accept="image/*"
+                                class="form-control"
+                            >
+
+                            <small class="text-muted">
+                                Upload your profile image
+                            </small>
+
+                        </div>
+
+                        <div class="wizard-footer-btns">
+                            <button type="button" class="btn-wizard-prev" id="btnStep3Prev">Back</button>
+                            <button type="button" class="btn-wizard-submit" id="btnCompleteRegistration">
+                                Complete Registration <i class="bi bi-check-circle-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Success Screen -->
+                    <div class="wizard-step-panel" id="stepPanelSuccess">
+                        <div class="success-wizard-box">
+                            <div class="success-icon-badge"><i class="bi bi-check-lg"></i></div>
+                            <h4>Registration Successful!</h4>
+                            <p>Thank you for signing up. Your profile details have been submitted to our admin team for quick verification.</p>
+                            <a href="{% url 'login' %}" class="btn-wizard-next" style="display: inline-flex; margin: 0 auto; text-decoration: none;">
+                                Go to Login Page <i class="bi bi-box-arrow-in-right"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- SweetAlert2 Library CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- ===== Interactive Popup Wizard Script ===== -->
+    <script>
+        function showToast(icon, message) {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: icon,
+                title: message,
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const spModalBackdrop = document.getElementById('spModalBackdrop');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+            const openRegistrationBtn = document.getElementById('openRegistrationBtn');
+
+            // Navigation Nodes & Panels
+            const node1 = document.getElementById('node1');
+            const node2 = document.getElementById('node2');
+            const node3 = document.getElementById('node3');
+            const wizardProgressLine = document.getElementById('wizardProgressLine');
+
+            const stepPanel1 = document.getElementById('stepPanel1');
+            const stepPanel2 = document.getElementById('stepPanel2');
+            const stepPanel3 = document.getElementById('stepPanel3');
+            const stepPanelSuccess = document.getElementById('stepPanelSuccess');
+
+            // Form Inputs & Buttons
+            const providerEmail = document.getElementById('providerEmail');
+            const providerSendOtpBtn = document.getElementById('providerSendOtpBtn');
+            const providerOtpWrap = document.getElementById('providerOtpWrap');
+            const providerOtpInput = document.getElementById('providerOtpInput');
+            const providerVerifyOtpBtn = document.getElementById('providerVerifyOtpBtn');
+            const providerOtpStatus = document.getElementById('providerOtpStatus');
+            const btnStep1Next = document.getElementById('btnStep1Next');
+
+            const fullNameInput = document.getElementById('fullNameInput');
+            const businessNameInput = document.getElementById('businessNameInput');
+            const providerCategorySelect = document.getElementById('providerCategorySelect');
+            const otherCategoryWrap = document.getElementById('otherCategoryWrap');
+            const otherCategoryInput = document.getElementById('otherCategoryInput');
+            const btnStep2Prev = document.getElementById('btnStep2Prev');
+            const btnStep2Next = document.getElementById('btnStep2Next');
+
+            const mobileInput = document.getElementById('mobileInput');
+            const cityInput = document.getElementById('cityInput');
+            const experienceSelect = document.getElementById('experienceSelect');
+            const passwordInput = document.getElementById('passwordInput');
+            const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+            const btnStep3Prev = document.getElementById('btnStep3Prev');
+            const btnCompleteRegistration = document.getElementById('btnCompleteRegistration');
+
+            let isEmailVerified = false;
+
+            // Open Modal Popup
+            function openModal() {
+                if (spModalBackdrop) {
+                    spModalBackdrop.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            // Close Modal Popup
+            function closeModal() {
+                if (spModalBackdrop) {
+                    spModalBackdrop.classList.remove('show');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            if (heroRegisterBtn) heroRegisterBtn.addEventListener('click', openModal);
+            if (openRegistrationBtn) openRegistrationBtn.addEventListener('click', openModal);
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+
+            if (spModalBackdrop) {
+                spModalBackdrop.addEventListener('click', function(e) {
+                    if (e.target === spModalBackdrop) closeModal();
+                });
+            }
+
+            // 1. Send OTP (AJAX)
+            if (providerSendOtpBtn) {
+                providerSendOtpBtn.addEventListener('click', function() {
+                    if (!providerEmail.checkValidity()) {
+                        providerEmail.reportValidity();
+                        return;
+                    }
+
+                    const emailVal = providerEmail.value.trim();
+                    if (!emailVal) {
+                        providerOtpStatus.className = 'otp-status-msg error';
+                        providerOtpStatus.textContent = '❌ Please enter email address.';
+                        return;
+                    }
+
+                    providerOtpStatus.className = 'otp-status-msg info';
+                    providerOtpStatus.textContent = '⏳ Sending OTP...';
+                    providerSendOtpBtn.disabled = true;
+
+                    const formData = new FormData();
+                    formData.append("email", emailVal);
+                    const csrfTokenEl = document.querySelector("[name=csrfmiddlewaretoken]");
+                    if (csrfTokenEl) {
+                        formData.append("csrfmiddlewaretoken", csrfTokenEl.value);
+                    }
+
+                    fetch("{% url 'provider_send_otp' %}", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        providerSendOtpBtn.disabled = false;
+                        if (data.success) {
+                            providerOtpStatus.className = 'otp-status-msg success';
+                            providerOtpStatus.textContent = '✓ ' + data.message;
+                            providerOtpWrap.style.display = 'block';
+                            providerSendOtpBtn.textContent = 'Resend OTP';
+                            providerOtpInput.setAttribute('required', 'required');
+                        } else {
+                            providerOtpStatus.className = 'otp-status-msg error';
+                            providerOtpStatus.textContent = '❌ ' + data.message;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        providerSendOtpBtn.disabled = false;
+                        providerOtpStatus.className = 'otp-status-msg error';
+                        providerOtpStatus.textContent = '❌ Something went wrong while sending OTP.';
+                    });
+                });
+            }
+
+            // 2. Verify OTP (AJAX)
+            if (providerVerifyOtpBtn) {
+                providerVerifyOtpBtn.addEventListener('click', function() {
+                    const emailVal = providerEmail.value.trim();
+                    const otpVal = providerOtpInput.value.trim();
+
+                    if (!/^[0-9]{6}$/.test(otpVal)) {
+                        providerOtpStatus.className = 'otp-status-msg error';
+                        providerOtpStatus.textContent = '❌ Please enter a valid 6-digit OTP.';
+                        return;
+                    }
+
+                    providerOtpStatus.className = 'otp-status-msg info';
+                    providerOtpStatus.textContent = '⏳ Verifying OTP...';
+                    providerVerifyOtpBtn.disabled = true;
+
+                    const formData = new FormData();
+                    formData.append("email", emailVal);
+                    formData.append("otp", otpVal);
+                    const csrfTokenEl = document.querySelector("[name=csrfmiddlewaretoken]");
+                    if (csrfTokenEl) {
+                        formData.append("csrfmiddlewaretoken", csrfTokenEl.value);
+                    }
+
+                    fetch("{% url 'provider_verify_otp' %}", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            isEmailVerified = true;
+                            providerOtpStatus.className = 'otp-status-msg success';
+                            providerOtpStatus.textContent = '✓ Email verified successfully.';
+                            providerEmail.readOnly = true;
+                            providerOtpInput.readOnly = true;
+                            providerVerifyOtpBtn.innerText = "Verified ✓";
+                            providerVerifyOtpBtn.disabled = true;
+                            providerSendOtpBtn.disabled = true;
+                            btnStep1Next.disabled = false;
+                        } else {
+                            isEmailVerified = false;
+                            btnStep1Next.disabled = true;
+                            providerVerifyOtpBtn.disabled = false;
+                            providerOtpStatus.className = 'otp-status-msg error';
+                            providerOtpStatus.textContent = '❌ ' + data.message;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        isEmailVerified = false;
+                        btnStep1Next.disabled = true;
+                        providerVerifyOtpBtn.disabled = false;
+                        providerOtpStatus.className = 'otp-status-msg error';
+                        providerOtpStatus.textContent = '❌ Something went wrong while verifying OTP.';
+                    });
+                });
+            }
+
+            // Category Change logic (Select existing or "Other Category")
+            if (providerCategorySelect) {
+                providerCategorySelect.addEventListener('change', function() {
+                    if (this.value === 'other') {
+                        otherCategoryWrap.style.display = 'block';
+                        otherCategoryInput.setAttribute('required', 'required');
+                    } else {
+                        otherCategoryWrap.style.display = 'none';
+                        otherCategoryInput.removeAttribute('required');
+                        otherCategoryInput.value = '';
+                    }
+                });
+            }
+
+            // Go to Step 2
+            if (btnStep1Next) {
+                btnStep1Next.addEventListener('click', function() {
+                    if (!isEmailVerified) return;
+                    stepPanel1.classList.remove('active');
+                    stepPanel2.classList.add('active');
+
+                    node1.classList.add('completed');
+                    node2.classList.add('active');
+                    wizardProgressLine.style.width = '50%';
+                });
+            }
+
+            // Step 2 Prev
+            if (btnStep2Prev) {
+                btnStep2Prev.addEventListener('click', function() {
+                    stepPanel2.classList.remove('active');
+                    stepPanel1.classList.add('active');
+
+                    node2.classList.remove('active');
+                    wizardProgressLine.style.width = '0%';
+                });
+            }
+
+            // Step 2 Next (HTML5 Native Validation)
+            if (btnStep2Next) {
+                btnStep2Next.addEventListener('click', function() {
+                    if (!fullNameInput.checkValidity()) {
+                        fullNameInput.reportValidity();
+                        return;
+                    }
+                    if (!businessNameInput.checkValidity()) {
+                        businessNameInput.reportValidity();
+                        return;
+                    }
+                    if (!providerCategorySelect.checkValidity()) {
+                        providerCategorySelect.reportValidity();
+                        return;
+                    }
+                    if (otherCategoryWrap.style.display !== 'none' && !otherCategoryInput.checkValidity()) {
+                        otherCategoryInput.reportValidity();
+                        return;
+                    }
+
+                    stepPanel2.classList.remove('active');
+                    stepPanel3.classList.add('active');
+
+                    node2.classList.add('completed');
+                    node3.classList.add('active');
+                    wizardProgressLine.style.width = '100%';
+                });
+            }
+
+            // Step 3 Prev
+            if (btnStep3Prev) {
+                btnStep3Prev.addEventListener('click', function() {
+                    stepPanel3.classList.remove('active');
+                    stepPanel2.classList.add('active');
+
+                    node3.classList.remove('active');
+                    wizardProgressLine.style.width = '50%';
+                });
+            }
+
+            // Complete Registration (Form Submit via AJAX)
+            if (btnCompleteRegistration) {
+                btnCompleteRegistration.addEventListener('click', function() {
+                    if (!mobileInput.checkValidity()) {
+                        mobileInput.reportValidity();
+                        return;
+                    }
+                    if (!cityInput.checkValidity()) {
+                        cityInput.reportValidity();
+                        return;
+                    }
+                    if (!experienceSelect.checkValidity()) {
+                        experienceSelect.reportValidity();
+                        return;
+                    }
+                    if (!passwordInput.checkValidity()) {
+                        passwordInput.reportValidity();
+                        return;
+                    }
+                    if (!confirmPasswordInput.checkValidity()) {
+                        confirmPasswordInput.reportValidity();
+                        return;
+                    }
+                    if (passwordInput.value !== confirmPasswordInput.value) {
+                        confirmPasswordInput.setCustomValidity("Passwords do not match.");
+                        confirmPasswordInput.reportValidity();
+                        return;
+                    } else {
+                        confirmPasswordInput.setCustomValidity("");
+                    }
+
+                    const form = document.getElementById("providerWizardForm");
+                    const formData = new FormData(form);
+
+                    btnCompleteRegistration.disabled = true;
+                    btnCompleteRegistration.innerHTML = 'Submitting... <i class="bi bi-hourglass-split"></i>';
+
+                    fetch("{% url 'provider_register' %}", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        btnCompleteRegistration.disabled = false;
+                        btnCompleteRegistration.innerHTML = 'Complete Registration <i class="bi bi-check-circle-fill"></i>';
+
+                        if (data.success) {
+                            showToast('success', data.message);
+                            stepPanel3.classList.remove('active');
+                            stepPanelSuccess.classList.add('active');
+                            node3.classList.add('completed');
+                        } else {
+                            showToast('error', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        btnCompleteRegistration.disabled = false;
+                        btnCompleteRegistration.innerHTML = 'Complete Registration <i class="bi bi-check-circle-fill"></i>';
+                        showToast('error', "Registration failed. Please try again.");
+                    });
+                });
+            }
+
+            // Auto-open modal if hash is #registerSection
+            if (window.location.hash === '#registerSection') {
+                openModal();
+            }
+        });
+    </script>
+{% include 'user/footer.html' %}
+
+</body>
+</html>

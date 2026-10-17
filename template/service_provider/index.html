@@ -1,0 +1,683 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Dashboard - Local Service Marketplace</title>
+
+    <style>
+        /* Dashboard Layout & Component Styles */
+        .dash-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dash-welcome-card {
+            background: linear-gradient(135deg, #0F2E2A 0%, #165b49 100%);
+            color: #ffffff;
+            padding: 26px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 24px rgba(15, 46, 42, 0.15);
+            margin-bottom: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dash-welcome-card::after {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(123, 232, 200, 0.2), transparent 70%);
+            pointer-events: none;
+        }
+
+        .welcome-text h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-text p {
+            font-size: 0.92rem;
+            color: #7BE8C8;
+            margin: 0;
+        }
+
+        .status-toggle-box {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            white-space: nowrap;
+        }
+
+        .status-dot-active {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+            animation: pulseDot 2s infinite;
+        }
+
+        @keyframes pulseDot {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .status-toggle-box span {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+            width: 100%;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(15, 46, 42, 0.08);
+            box-shadow: 0 4px 14px rgba(15, 46, 42, 0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(15, 46, 42, 0.07);
+            border-color: rgba(31, 122, 99, 0.25);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .stat-icon-wrap {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon-teal { background: #E6F3EF; color: #1F7A63; }
+        .stat-icon-amber { background: #FEF6E6; color: #D97706; }
+        .stat-icon-green { background: #E6F9F0; color: #10B981; }
+        .stat-icon-gold { background: #FFFBEB; color: #F59E0B; }
+
+        .stat-title {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: #5B6E6A;
+        }
+
+        .stat-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: #0F2E2A;
+            line-height: 1.1;
+            margin-bottom: 4px;
+        }
+
+        .stat-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-up { color: #10B981; }
+        .badge-amber { color: #D97706; }
+
+        /* Content Grid (2 Columns, mathematically bounded) */
+        .dash-content-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* Section Cards */
+        .dash-card {
+            background: #ffffff;
+            border-radius: 20px;
+            border: 1px solid rgba(15, 46, 42, 0.08);
+            box-shadow: 0 4px 16px rgba(15, 46, 42, 0.03);
+            padding: 22px;
+            margin-bottom: 24px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .dash-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(15, 46, 42, 0.08);
+        }
+
+        .dash-card-header h4 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0F2E2A;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dash-card-header h4 i {
+            color: #1F7A63;
+        }
+
+        .view-all-link {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #1F7A63;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .view-all-link:hover {
+            color: #165b49;
+            text-decoration: underline;
+        }
+
+        /* Table Styling */
+        .custom-table-wrap {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.88rem;
+            white-space: nowrap;
+        }
+
+        .custom-table th {
+            padding: 10px 12px;
+            background: #F7FAF9;
+            color: #5B6E6A;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border-bottom: 1px solid rgba(15, 46, 42, 0.08);
+        }
+
+        .custom-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(15, 46, 42, 0.06);
+            vertical-align: middle;
+            color: #0F2E2A;
+        }
+
+        .customer-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .customer-avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .status-badge-tbl {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-pending { background: #FEF6E6; color: #D97706; }
+        .badge-accepted { background: #E6F3EF; color: #1F7A63; }
+        .badge-completed { background: #E6F9F0; color: #10B981; }
+
+        .btn-table-action {
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-accept { background: #1F7A63; color: #ffffff; }
+        .btn-accept:hover { background: #165b49; }
+
+        .btn-reject { background: #FFF0F0; color: #E74C3C; margin-left: 4px; }
+        .btn-reject:hover { background: #E74C3C; color: #ffffff; }
+
+        /* Schedule Timeline */
+        .timeline-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: #F7FAF9;
+            border-left: 4px solid #1F7A63;
+        }
+
+        .timeline-time {
+            font-size: 0.8rem;
+            font-weight: 800;
+            color: #1F7A63;
+            min-width: 65px;
+        }
+
+        .timeline-info h6 {
+            margin: 0 0 2px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #0F2E2A;
+        }
+
+        .timeline-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #5B6E6A;
+        }
+
+        /* Review Card Items */
+        .review-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(15, 46, 42, 0.06);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-author {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .review-author-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .stars { color: #F59E0B; font-size: 0.8rem; }
+
+        .review-text {
+            font-size: 0.82rem;
+            color: #5B6E6A;
+            margin: 0;
+            font-style: italic;
+        }
+
+        /* Quick Action Grid */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .quick-act-btn {
+            background: #F7FAF9;
+            border: 1px solid rgba(15, 46, 42, 0.08);
+            padding: 14px 10px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            color: #0F2E2A;
+            font-size: 0.82rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-act-btn i {
+            font-size: 1.3rem;
+            color: #1F7A63;
+        }
+
+        .quick-act-btn:hover {
+            background: #1F7A63;
+            color: #ffffff;
+            border-color: #1F7A63;
+            transform: translateY(-2px);
+        }
+
+        .quick-act-btn:hover i {
+            color: #ffffff;
+        }
+
+        @media (max-width: 991px) {
+            .dash-content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+{% include 'service_provider/navbar.html' %}
+
+<!-- Main Dashboard Content Area -->
+<main class="main-content" id="mainContent">
+
+    <div class="dash-container">
+
+        <!-- 1. Dashboard Welcome Banner -->
+        <div class="dash-welcome-card">
+            <div class="welcome-text">
+                <h2>Welcome Back,{{ provider.full_name }} 👋</h2>
+                <p>You have 5 new pending service booking requests to process today.</p>
+            </div>
+
+            <div class="status-toggle-box">
+                <span class="status-dot-active"></span>
+                <span>Online & Accepting Bookings</span>
+            </div>
+        </div>
+
+        <!-- 2. Key Performance Metric Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Bookings</span>
+                    <div class="stat-icon-wrap stat-icon-teal"><i class="bi bi-journal-check"></i></div>
+                </div>
+                <div class="stat-value">48</div>
+                <span class="stat-badge badge-up"><i class="bi bi-arrow-up-right"></i> +12% this month</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Pending Requests</span>
+                    <div class="stat-icon-wrap stat-icon-amber"><i class="bi bi-clock-history"></i></div>
+                </div>
+                <div class="stat-value" style="color: #D97706;">5</div>
+                <span class="stat-badge badge-amber"><i class="bi bi-exclamation-circle"></i> Requires Response</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Completed Jobs</span>
+                    <div class="stat-icon-wrap stat-icon-green"><i class="bi bi-check-circle-fill"></i></div>
+                </div>
+                <div class="stat-value">39</div>
+                <span class="stat-badge badge-up"><i class="bi bi-graph-up"></i> 94% Success Rate</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Earnings</span>
+                    <div class="stat-icon-wrap stat-icon-green"><i class="bi bi-currency-rupee"></i></div>
+                </div>
+                <div class="stat-value">₹ 28,450</div>
+                <span class="stat-badge badge-up"><i class="bi bi-arrow-up-right"></i> +18% vs last month</span>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Customer Rating</span>
+                    <div class="stat-icon-wrap stat-icon-gold"><i class="bi bi-star-fill"></i></div>
+                </div>
+                <div class="stat-value">4.9 ★</div>
+                <span class="stat-badge badge-up"><i class="bi bi-heart-fill" style="color: #e74c3c;"></i> 42 Reviews</span>
+            </div>
+        </div>
+
+        <!-- 3. Dashboard 2-Column Content Area -->
+        <div class="dash-content-grid">
+
+            <!-- LEFT COLUMN: Recent Booking Requests Table -->
+            <div>
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h4><i class="bi bi-calendar2-range-fill"></i> Recent Booking Requests</h4>
+                        <a href="#" class="view-all-link">View All Bookings <i class="bi bi-arrow-right"></i></a>
+                    </div>
+
+                    <div class="custom-table-wrap">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Service Required</th>
+                                    <th>Date & Time</th>
+                                    <th>Location</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="customer-pill">
+                                            <img src="https://i.pravatar.cc/80?img=33" alt="Customer" class="customer-avatar-sm">
+                                            <span>Amit Deshmukh</span>
+                                        </div>
+                                    </td>
+                                    <td><strong>🚰 Pipe Leakage Repair</strong></td>
+                                    <td>Today, 11:30 AM</td>
+                                    <td>Kothrud, Pune</td>
+                                    <td><strong>₹ 650</strong></td>
+                                    <td><span class="status-badge-tbl badge-pending">Pending</span></td>
+                                    <td>
+                                        <button type="button" class="btn-table-action btn-accept" onclick="alert('Booking Accepted! SMS sent to customer.')">Accept</button>
+                                        <button type="button" class="btn-table-action btn-reject" onclick="alert('Booking Declined.')">Reject</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="customer-pill">
+                                            <img src="https://i.pravatar.cc/80?img=47" alt="Customer" class="customer-avatar-sm">
+                                            <span>Sneha Patil</span>
+                                        </div>
+                                    </td>
+                                    <td><strong>❄️ AC Gas Top-up & Clean</strong></td>
+                                    <td>Today, 02:00 PM</td>
+                                    <td>Baner, Pune</td>
+                                    <td><strong>₹ 1,200</strong></td>
+                                    <td><span class="status-badge-tbl badge-accepted">Accepted</span></td>
+                                    <td>
+                                        <button type="button" class="btn-table-action btn-accept" style="background: #27ae60;">Start Job</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="customer-pill">
+                                            <img src="https://i.pravatar.cc/80?img=15" alt="Customer" class="customer-avatar-sm">
+                                            <span>Vikas Mehta</span>
+                                        </div>
+                                    </td>
+                                    <td><strong>⚡ Switchboard Wiring</strong></td>
+                                    <td>Today, 05:30 PM</td>
+                                    <td>Viman Nagar</td>
+                                    <td><strong>₹ 450</strong></td>
+                                    <td><span class="status-badge-tbl badge-pending">Pending</span></td>
+                                    <td>
+                                        <button type="button" class="btn-table-action btn-accept" onclick="alert('Booking Accepted!')">Accept</button>
+                                        <button type="button" class="btn-table-action btn-reject">Reject</button>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        <div class="customer-pill">
+                                            <img src="https://i.pravatar.cc/80?img=28" alt="Customer" class="customer-avatar-sm">
+                                            <span>Pooja Kulkarni</span>
+                                        </div>
+                                    </td>
+                                    <td><strong>🧹 Full Home Cleaning</strong></td>
+                                    <td>Yesterday</td>
+                                    <td>Aundh, Pune</td>
+                                    <td><strong>₹ 2,400</strong></td>
+                                    <td><span class="status-badge-tbl badge-completed">Completed</span></td>
+                                    <td>
+                                        <span style="font-size: 0.8rem; font-weight: 700; color: #10B981;">Paid ✅</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Recent Reviews Card -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h4><i class="bi bi-star-fill"></i> Recent Customer Reviews</h4>
+                        <a href="#" class="view-all-link">See All Reviews <i class="bi bi-arrow-right"></i></a>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-author">
+                            <div class="review-author-info">
+                                <img src="https://i.pravatar.cc/80?img=28" alt="Customer" class="customer-avatar-sm">
+                                <span>Pooja Kulkarni</span>
+                            </div>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <p class="review-text">"Rahul came right on time and fixed our kitchen plumbing issue quickly. Very polite and professional service!"</p>
+                    </div>
+
+                    <div class="review-item">
+                        <div class="review-author">
+                            <div class="review-author-info">
+                                <img src="https://i.pravatar.cc/80?img=12" alt="Customer" class="customer-avatar-sm">
+                                <span>Rohan Joshi</span>
+                            </div>
+                            <div class="stars">★★★★★</div>
+                        </div>
+                        <p class="review-text">"Great AC servicing. Highly recommended for electrical and cooling repairs in Kothrud area."</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Today's Schedule & Quick Actions -->
+            <div>
+                <!-- Today's Schedule Timeline Card -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h4><i class="bi bi-clock-history"></i> Today's Schedule</h4>
+                    </div>
+
+                    <div class="timeline-list">
+                        <div class="timeline-item">
+                            <div class="timeline-time">11:30 AM</div>
+                            <div class="timeline-info">
+                                <h6>Pipe Leakage Repair</h6>
+                                <p>📍 Kothrud, Pune · Amit Deshmukh</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item" style="border-left-color: #D97706;">
+                            <div class="timeline-time">02:00 PM</div>
+                            <div class="timeline-info">
+                                <h6>AC Gas Top-up Service</h6>
+                                <p>📍 Baner, Pune · Sneha Patil</p>
+                            </div>
+                        </div>
+
+                        <div class="timeline-item" style="border-left-color: #3498db;">
+                            <div class="timeline-time">05:30 PM</div>
+                            <div class="timeline-info">
+                                <h6>Switchboard Repair</h6>
+                                <p>📍 Viman Nagar · Vikas Mehta</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Card -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h4><i class="bi bi-lightning-charge-fill"></i> Quick Actions</h4>
+                    </div>
+
+                    <div class="quick-actions-grid">
+                        <a href="#" class="quick-act-btn">
+                            <i class="bi bi-plus-circle-fill"></i>
+                            Add Service
+                        </a>
+
+                        <a href="#" class="quick-act-btn">
+                            <i class="bi bi-cash-stack"></i>
+                            Payout Funds
+                        </a>
+
+                        <a href="#" class="quick-act-btn">
+                            <i class="bi bi-sliders"></i>
+                            Availability
+                        </a>
+
+                        <a href="#" class="quick-act-btn">
+                            <i class="bi bi-bar-chart-line-fill"></i>
+                            Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

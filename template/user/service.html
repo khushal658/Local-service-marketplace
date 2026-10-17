@@ -1,0 +1,349 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Services - Local Service Marketplace</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="{% static 'user/service.css' %}">
+<style>
+  @keyframes cardFadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .service-card {
+    animation: cardFadeInUp 0.45s ease backwards;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px rgba(15, 46, 42, 0.14);
+  }
+  .services-section {
+    max-width: 1380px;
+    width: 96%;
+    margin: 0 auto;
+    padding: 36px 12px 60px;
+  }
+  .filter-bar {
+    max-width: 1380px;
+    width: 96%;
+  }
+  .filter-bar-wrap {
+    padding: 0 12px;
+  }
+  .provider-full-name {
+    font-weight: 700;
+    color: #0F2E2A;
+    font-size: 0.88rem;
+    display: block;
+  }
+  .provider-verified-sub {
+    font-size: 0.75rem;
+    color: #1F7A63;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .pagination-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 36px;
+    padding-right: 6px;
+  }
+  .pagination-list {
+    display: flex;
+    list-style: none;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+  }
+  .page-link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #ffffff;
+    border: 1px solid rgba(15,46,42,0.15);
+    color: #0F2E2A;
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .page-link-btn:hover {
+    background: #E6F3EF;
+    color: #1F7A63;
+    border-color: #1F7A63;
+  }
+  .page-link-btn.active {
+    background: #1F7A63;
+    color: #ffffff;
+    border-color: #1F7A63;
+  }
+  .page-link-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+{% include 'user/navbar.html' %}
+
+<!-- ===== 1. Page Banner ===== -->
+<section class="page-banner">
+  <div class="page-banner-inner">
+    <h1>Our Services</h1>
+    <nav class="breadcrumb" aria-label="breadcrumb">
+      <a href="{% url 'user_index' %}">Home</a>
+      <span class="sep">›</span>
+      <span class="current">Services</span>
+    </nav>
+  </div>
+</section>
+
+<!-- ===== 2. Search & Filter Bar ===== -->
+<section class="filter-bar-wrap">
+  <form method="GET" action="{% url 'service' %}" class="filter-bar">
+    <div class="filter-item search-item">
+      <span class="icon">🔍</span>
+      <input type="text" name="search" value="{{ search_query }}" placeholder="Search a service...">
+    </div>
+
+    <div class="filter-item">
+      <span class="icon">📂</span>
+      <select name="cat_id">
+        <option value="">All Categories</option>
+        {% for cat in categories %}
+          <option value="{{ cat.id }}" {% if selected_cat_id == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button type="submit" class="filter-apply-btn">Apply Filters</button>
+  </form>
+</section>
+
+<!-- ===== 3. Services Grid (12 Cards Max Per Page) ===== -->
+<section class="services-section">
+  <div class="services-grid">
+
+    {% if services %}
+      {% for srv in services %}
+      <!-- Service Card -->
+      <div class="service-card">
+        <div class="service-img" style="position: relative;">
+          {% if srv.service_image %}
+            <img src="{{ srv.service_image.url }}" alt="{{ srv.service_name }}">
+          {% else %}
+            <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?q=80&w=800&auto=format&fit=crop" alt="{{ srv.service_name }}">
+          {% endif %}
+          <span class="category-tag">{{ srv.category.name }}</span>
+          {% if srv.is_pincode_match %}
+            <span style="position: absolute; top: 10px; left: 10px; background: #047857; color: white; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2;">
+              <i class="bi bi-geo-alt-fill me-1"></i> In Your Area ({{ customer_pincode }})
+            </span>
+          {% endif %}
+        </div>
+        <div class="service-body">
+          <h3>{{ srv.service_name }}</h3>
+          <p class="service-desc">{{ srv.service_description|truncatewords:12 }}</p>
+          <div class="service-meta">
+            <span class="rating">⭐ <b>{% if srv.provider_avg_rating and srv.provider_avg_rating > 0 %}{{ srv.provider_avg_rating }}{% else %}New{% endif %}</b> ({% if srv.provider_review_count %}{{ srv.provider_review_count }}{% else %}0{% endif %} reviews)</span>
+            {% if srv.price and srv.price > 0 %}
+            <span class="price">Visit Fee ₹{{ srv.price|floatformat:0 }}</span>
+            {% endif %}
+          </div>
+          <div class="provider-row">
+            <div>
+              <span class="provider-full-name">{{ srv.provider_full_name }}</span>
+              <span class="provider-verified-sub"><i class="bi bi-patch-check-fill"></i> Verified Provider</span>
+            </div>
+            <span class="experience"><b>{{ srv.experience }}</b> Exp</span>
+          </div>
+          <div style="margin-bottom: 10px; font-size: 0.78rem; color: #1F7A63; background: #E6F3EF; padding: 4px 10px; border-radius: 6px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(31, 122, 99, 0.15);">
+            <span><i class="bi bi-calendar-week-fill me-1"></i> Days: <b>{{ srv.available_days|default:"Mon - Sun" }}</b></span>
+            <span><i class="bi bi-clock-fill me-1"></i> {{ srv.availability|default:"9 AM - 7 PM" }}</span>
+          </div>
+          <a href="{% url 'view_service' %}?service_id={{ srv.id }}" class="view-details-btn">
+            View Details <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #64748b; background: #fff; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <i class="bi bi-search" style="font-size: 2.5rem; color: #1F7A63; display: block; margin-bottom: 12px;"></i>
+        <h4 style="font-weight: 700; color: #0F2E2A;">No services found</h4>
+        <p>No services match your search or selected category.</p>
+        <div style="display: flex; gap: 12px; justify-content: center; align-items: center; margin-top: 15px;">
+            <a href="{% url 'service' %}" style="display: inline-block; color: #1F7A63; font-weight: 600; text-decoration: underline;">View All Services</a>
+            <button type="button" class="btn text-white fw-bold" data-bs-toggle="modal" data-bs-target="#customRequestModal" style="background-color: #1F7A63; border-radius: 8px; padding: 8px 18px;">
+                <i class="bi bi-plus-circle me-1"></i> Post Your Custom Requirement
+            </button>
+        </div>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <!-- Pagination Right Side (Bottom) -->
+  {% if services.has_other_pages %}
+  <div class="pagination-wrapper">
+    <nav aria-label="Services page navigation">
+      <ul class="pagination-list">
+        {% if services.has_previous %}
+          <li><a href="?page={{ services.previous_page_number }}{% if selected_cat_id %}&cat_id={{ selected_cat_id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link-btn">‹ Prev</a></li>
+        {% else %}
+          <li><span class="page-link-btn disabled">‹ Prev</span></li>
+        {% endif %}
+
+        {% for num in services.paginator.page_range %}
+          {% if services.number == num %}
+            <li><span class="page-link-btn active">{{ num }}</span></li>
+          {% else %}
+            <li><a href="?page={{ num }}{% if selected_cat_id %}&cat_id={{ selected_cat_id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link-btn">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if services.has_next %}
+          <li><a href="?page={{ services.next_page_number }}{% if selected_cat_id %}&cat_id={{ selected_cat_id }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="page-link-btn">Next ›</a></li>
+        {% else %}
+          <li><span class="page-link-btn disabled">Next ›</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+
+</section>
+
+<!-- ===== Custom Service Request Modal ===== -->
+<div class="modal fade" id="customRequestModal" tabindex="-1" aria-labelledby="customRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 16px; border: none; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+      <div class="modal-header" style="background-color: #1F7A63; color: white;">
+        <h5 class="modal-title fw-bold" id="customRequestModalLabel"><i class="bi bi-patch-question-fill me-2"></i> Post Custom Requirement</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="customRequestForm">
+        {% csrf_token %}
+        <div class="modal-body p-4">
+          <p class="text-muted small mb-3">Didn't find the service you need? Describe your job requirement and nearby local professionals will get in touch!</p>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Service Title / Requirement *</label>
+            <input type="text" class="form-control" name="title" placeholder="e.g. Wooden Sofa Repair & Polish" required>
+          </div>
+
+          <div class="mb-3">
+              <label class="form-label fw-bold">Service Category</label>
+              <select class="form-select" name="category" required>
+                  <option value="">-- Select Service Category --</option>
+                  {% for cat in categories %}
+                      {% if cat.is_active %}
+                          <option value="{{ cat.name }}">{{ cat.name }}</option>
+                      {% endif %}
+                  {% endfor %}
+              </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Detailed Description *</label>
+            <textarea class="form-control" name="description" rows="3" placeholder="Describe what you need in detail..." required></textarea>
+          </div>
+
+          <div class="row g-2">
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">City / Area *</label>
+              <input type="text" class="form-control" name="city_area" placeholder="e.g. Pune, Kothrud" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label fw-bold">Expected Budget (₹)</label>
+              <input type="text" class="form-control" name="budget" placeholder="e.g. 1500">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Preferred Date</label>
+            <input type="date" class="form-control" name="preferred_date" id="customPreferredDate">
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn text-white fw-bold" style="background-color: #1F7A63;">Submit Requirement <i class="bi bi-send-fill ms-1"></i></button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap 5 JS & SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Disable past dates in calendar picker
+    const dateInput = document.getElementById('customPreferredDate');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+    const customForm = document.getElementById('customRequestForm');
+    if (customForm) {
+        customForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(customForm);
+            
+            fetch("{% url 'post_custom_request' %}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const modalEl = document.getElementById('customRequestModal');
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Request Posted!',
+                        text: data.message,
+                        confirmButtonColor: '#1F7A63'
+                    });
+                    customForm.reset();
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Notice',
+                        text: data.message,
+                        confirmButtonColor: '#1F7A63'
+                    });
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Something went wrong while posting your request.',
+                    confirmButtonColor: '#1F7A63'
+                });
+            });
+        });
+    }
+});
+</script>
+
+{% include 'user/footer.html' %}
+
+</body>
+</html>

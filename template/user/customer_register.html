@@ -1,0 +1,401 @@
+{% load static %}
+{% include 'user/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration - Local Service Marketplace</title>
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Customer Registration Custom Styles -->
+    <link rel="stylesheet" href="{% static 'user/customer_register.css' %}">
+</head>
+<body>
+
+    <section class="register-page-section">
+        <div class="register-split-wrapper">
+
+            <!-- ===== LEFT PANEL: Branding & Feature Showcase ===== -->
+            <div class="register-branding-panel">
+                <div class="branding-content">
+                    <div class="welcome-badge">
+                        <i class="bi bi-stars"></i> Welcome To Our Marketplace
+                    </div>
+
+                    <h2>Find & Book Verified Local Experts In Minutes.</h2>
+                    <p class="subtitle">Join thousands of happy customers who rely on our platform for reliable home repair, cleaning, salon, and maintenance services.</p>
+
+                    <!-- Feature Highlights List -->
+                    <div class="highlights-list">
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="bi bi-grid-fill"></i>
+                            </div>
+                            <div class="highlight-text">
+                                <h4>100+ Service Categories</h4>
+                                <p>Electricians, Plumbers, Cleaners, Tutors & more</p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="highlight-text">
+                                <h4>100% Verified Professionals</h4>
+                                <p>Strict background check & identity verification</p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <div class="highlight-text">
+                                <h4>Transparent Upfront Pricing</h4>
+                                <p>No hidden fees or unexpected charges</p>
+                            </div>
+                        </div>
+
+                        <div class="highlight-item">
+                            <div class="highlight-icon">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                            <div class="highlight-text">
+                                <h4>Top Rated 4.9/5 Experience</h4>
+                                <p>Over 15,000+ satisfied customer reviews</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Testimonial Quote Box -->
+                <div class="testimonial-quote-box">
+                    <p>"Booking an electrician through this platform was so fast and hassle-free. Professional service delivered right at my door!"</p>
+                    <div class="testimonial-author">
+                        <span class="author-name">Sneha Patil, Pune</span>
+                        <span class="stars">⭐⭐⭐⭐⭐</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== RIGHT PANEL: Registration Form ===== -->
+            <div class="register-card-container">
+
+                <div class="register-header">
+                    <h1>Customer Registration</h1>
+                    <p>Create your free account to book verified local service pros</p>
+                </div>
+
+                <form id="customerRegisterForm" action="{% url 'customer_register' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- 1. Personal Information -->
+                    <div class="form-section-block">
+                        <div class="form-section-title">
+                            <i class="bi bi-person-circle"></i> Personal Information
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fullName">👤 Full Name *</label>
+                            <input type="text" id="fullName" name="full_name" placeholder="Enter your full name" required>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="customerEmail">📧 Email Address *</label>
+                                <div class="email-input-btn-group">
+                                    <input type="email" id="customerEmail" name="email" placeholder="name@example.com" required>
+                                    <button type="button" class="btn-otp-send" id="customerSendOtpBtn">Send OTP</button>
+                                </div>
+                                <span class="otp-status-msg" id="customerOtpStatus"></span>
+                            </div>
+
+                           <div class="form-group">
+    <label for="mobile">📱 Mobile Number *</label>
+    <input
+        type="tel"
+        id="mobile"
+        name="mobile"
+        placeholder="Enter 10-digit mobile number"
+        pattern="[0-9]{10}"
+        maxlength="10"
+        minlength="10"
+        inputmode="numeric"
+        required
+        oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10);">
+</div>
+                        </div>
+
+                        <!-- OTP Input Field (Shown after clicking Send OTP) -->
+                        <div class="form-group" id="customerOtpWrap" style="display: none;">
+                            <label for="customerOtpInput">🔑 Enter 6-Digit Email OTP *</label>
+                            <div class="otp-input-btn-group">
+                                <input type="text" id="customerOtpInput" maxlength="6" placeholder="Enter 6-digit OTP">
+                                <button type="button" class="btn-otp-verify" id="customerVerifyOtpBtn">Verify OTP</button>
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="password">🔒 Password *</label>
+                                <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">🔒 Confirm Password *</label>
+                                <input type="password" id="confirmPassword" name="confirm_password" placeholder="Re-enter your password" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Profile Information (Optional) -->
+                    <div class="form-section-block">
+                        <div class="form-section-title">
+                            <i class="bi bi-person-badge"></i> Profile Information
+                        </div>
+
+                        <div class="form-group">
+                            <label for="profilePhoto">🖼️ Profile Photo (Optional)</label>
+                            <input type="file" id="profilePhoto" name="profile_photo" accept="image/*">
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label for="gender">🚻 Gender (Optional)</label>
+                                <select id="gender" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dob">🎂 Date of Birth (Optional)</label>
+                                <input type="date" id="dob" name="dob">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Address Information -->
+                    <div class="form-section-block">
+                        <div class="form-section-title">
+                            <i class="bi bi-geo-alt-fill"></i> Address Details
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">🏠 Address *</label>
+                            <textarea id="address" name="address" rows="2" placeholder="House/Flat No., Street, Landmark" required></textarea>
+                        </div>
+
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label for="city">🏙️ City *</label>
+                                <input type="text" id="city" name="city" placeholder="e.g. Pune" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="state">📍 State *</label>
+                                <input type="text" id="state" name="state" placeholder="e.g. Maharashtra" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pincode">📮 Pincode *</label>
+                                <input type="text" id="pincode" name="pincode" placeholder="6-digit pincode" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Terms & Conditions -->
+                    <div class="terms-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">☑️ I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+
+                    <!-- 5. Submit Button -->
+                    <button type="submit" class="btn-create-account">
+                        <i class="bi bi-person-plus-fill"></i> Create Account
+                    </button>
+
+                    <div class="register-footer-text">
+                        Already have an account? <a href="#">Login Here</a>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Email OTP Verification JavaScript -->
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const customerEmail = document.getElementById('customerEmail');
+        const customerSendOtpBtn = document.getElementById('customerSendOtpBtn');
+        const customerOtpWrap = document.getElementById('customerOtpWrap');
+        const customerOtpInput = document.getElementById('customerOtpInput');
+        const customerVerifyOtpBtn = document.getElementById('customerVerifyOtpBtn');
+        const customerOtpStatus = document.getElementById('customerOtpStatus');
+        const customerRegisterForm = document.getElementById('customerRegisterForm');
+
+        function getCsrfToken() {
+            const tokenInput = document.querySelector('[name=csrfmiddlewaretoken]');
+            return tokenInput ? tokenInput.value : '';
+        }
+
+        // 1. Send OTP Event
+        if (customerSendOtpBtn) {
+            customerSendOtpBtn.addEventListener('click', function() {
+                const emailVal = customerEmail.value.trim();
+                if (!emailVal || !emailVal.includes('@')) {
+                    customerOtpStatus.className = 'otp-status-msg error';
+                    customerOtpStatus.textContent = '❌ Please enter a valid email address first.';
+                    return;
+                }
+
+                customerSendOtpBtn.disabled = true;
+                customerSendOtpBtn.textContent = 'Sending OTP...';
+
+                const formData = new FormData();
+                formData.append('email', emailVal);
+
+                fetch("{% url 'send_customer_otp' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        customerOtpStatus.className = 'otp-status-msg info';
+                        customerOtpStatus.textContent = '📩 ' + data.message;
+                        customerOtpWrap.style.display = 'block';
+                        customerSendOtpBtn.disabled = false;
+                        customerSendOtpBtn.textContent = 'Resend OTP';
+                    } else {
+                        customerOtpStatus.className = 'otp-status-msg error';
+                        customerOtpStatus.textContent = '❌ ' + data.message;
+                        customerSendOtpBtn.disabled = false;
+                        customerSendOtpBtn.textContent = 'Send OTP';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    customerOtpStatus.className = 'otp-status-msg error';
+                    customerOtpStatus.textContent = '❌ Something went wrong while sending OTP.';
+                    customerSendOtpBtn.disabled = false;
+                    customerSendOtpBtn.textContent = 'Send OTP';
+                });
+            });
+        }
+
+        // 2. Verify OTP Event
+        if (customerVerifyOtpBtn) {
+            customerVerifyOtpBtn.addEventListener('click', function() {
+                const otpVal = customerOtpInput.value.trim();
+                const emailVal = customerEmail.value.trim();
+
+                if (!otpVal || otpVal.length !== 6) {
+                    customerOtpStatus.className = 'otp-status-msg error';
+                    customerOtpStatus.textContent = '❌ Please enter a 6-digit OTP.';
+                    return;
+                }
+
+                customerVerifyOtpBtn.disabled = true;
+                customerVerifyOtpBtn.textContent = 'Verifying...';
+
+                const formData = new FormData();
+                formData.append('email', emailVal);
+                formData.append('otp', otpVal);
+
+                fetch("{% url 'verify_customer_otp' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': getCsrfToken()
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        customerOtpStatus.className = 'otp-status-msg success';
+                        customerOtpStatus.textContent = '✓ ' + data.message;
+                        customerEmail.readOnly = true;
+                        customerOtpWrap.style.display = 'none';
+                        customerSendOtpBtn.disabled = true;
+                        customerSendOtpBtn.textContent = 'Verified ✓';
+                    } else {
+                        customerOtpStatus.className = 'otp-status-msg error';
+                        customerOtpStatus.textContent = '❌ ' + data.message;
+                        customerVerifyOtpBtn.disabled = false;
+                        customerVerifyOtpBtn.textContent = 'Verify OTP';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    customerOtpStatus.className = 'otp-status-msg error';
+                    customerOtpStatus.textContent = '❌ Something went wrong while verifying OTP.';
+                    customerVerifyOtpBtn.disabled = false;
+                    customerVerifyOtpBtn.textContent = 'Verify OTP';
+                });
+            });
+        }
+
+        // 3. Register Form AJAX Submit Event
+        if (customerRegisterForm) {
+            customerRegisterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const pass = document.getElementById('password').value;
+                const confirmPass = document.getElementById('confirmPassword').value;
+
+                if (pass !== confirmPass) {
+                    alert('❌ Passwords do not match.');
+                    return;
+                }
+
+                const submitBtn = customerRegisterForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Creating Account...';
+
+                const formData = new FormData(customerRegisterForm);
+
+                fetch("{% url 'customer_register' %}", {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+
+                    if (data.success) {
+                        alert('✅ ' + data.message);
+                        window.location.href = data.redirect_url || "{% url 'login' %}";
+                    } else {
+                        alert('❌ ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                    alert('❌ Registration failed. Please try again.');
+                });
+            });
+        }
+    });
+</script>
+{% include 'user/footer.html' %}
+
+</body>
+</html>

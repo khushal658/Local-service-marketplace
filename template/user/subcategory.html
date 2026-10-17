@@ -1,0 +1,194 @@
+{% load static %}
+{% include 'user/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if category %}{{ category.name }}{% else %}Subcategories{% endif %} - Local Service Marketplace</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Custom Subcategory Styles -->
+    <link rel="stylesheet" href="{% static 'user/subcategory.css' %}">
+</head>
+<body>
+
+    <!-- ===== 1. Category Hero Banner Header (Matching Site Design System) ===== -->
+    <section class="subcat-hero-banner">
+        <div class="subcat-hero-inner">
+            <!-- Dynamic Breadcrumbs -->
+            <nav class="subcat-breadcrumb" aria-label="breadcrumb">
+                <a href="{% url 'user_index' %}"><i class="bi bi-house-door-fill"></i> Home</a>
+                <span class="sep">›</span>
+                <a href="{% url 'category' %}">Categories</a>
+                <span class="sep">›</span>
+                <span class="current" id="breadcrumbCurrentSub">{% if category %}{{ category.name }}{% else %}Subcategories{% endif %}</span>
+            </nav>
+
+            <!-- Category Eyebrow Badge Tag -->
+            <span class="category-eyebrow-badge">CATEGORY SERVICES</span>
+
+            <!-- Hero H1 Title & Dynamic Icon -->
+            <div class="subcat-hero-title-row">
+                <span class="category-icon-emoji" id="heroCategoryEmoji">
+                    <i class="bi {% if category %}{{ category.icon_class }}{% else %}bi-grid-fill{% endif %}"></i>
+                </span>
+                <h1 id="heroCategoryTitle">{% if category %}{{ category.name }}{% else %}Subcategory Services{% endif %}</h1>
+            </div>
+
+            <!-- Description -->
+            <p class="subcat-hero-subtitle" id="heroCategoryDesc">
+                {% if category and category.description %}{{ category.description }}{% else %}Find the best verified service providers near you. Compare prices, read reviews, and connect with top-rated experts.{% endif %}
+            </p>
+
+            <!-- 3 Glass Stat Badges -->
+            <div class="glass-stats-row">
+                <div class="glass-stat-card">
+                    <div class="stat-icon-wrap"><i class="bi bi-people-fill"></i></div>
+                    <div>
+                        <div class="stat-val" id="statProviders">{% if category and category.providers_count %}{{ category.providers_count }}{% else %}100+{% endif %}</div>
+                        <div class="stat-lbl">Service Providers</div>
+                    </div>
+                </div>
+
+                <div class="glass-stat-card">
+                    <div class="stat-icon-wrap"><i class="bi bi-tag-fill"></i></div>
+                    <div>
+                        <div class="stat-val" id="statRating">From ₹{% if category and category.starting_price %}{{ category.starting_price }}{% else %}199{% endif %}</div>
+                        <div class="stat-lbl">Starting Price</div>
+                    </div>
+                </div>
+
+                <div class="glass-stat-card">
+                    <div class="stat-icon-wrap"><i class="bi bi-clock-history"></i></div>
+                    <div>
+                        <div class="stat-val" id="statResponse">&lt;1 hr</div>
+                        <div class="stat-lbl">Quick Response</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+  
+
+    <!-- ===== 3. Browse Subcategories Section (Dynamic) ===== -->
+    <section class="subcat-browse-container">
+        <div class="subcat-section-header">
+            <div class="accent-bar-indicator"></div>
+            <h2 id="browseSectionTitle">Browse Subcategories</h2>
+        </div>
+
+        <!-- Dynamic Pill Cards Grid -->
+        <div class="subcat-pill-grid" id="subcatPillGrid">
+            <!-- All Services Option -->
+            <a href="{% url 'subcategory' %}?cat_id={{ category.id }}" class="subcat-pill-card c-purple {% if not selected_subcat %}active{% endif %}" style="text-decoration:none;">
+                <div class="pill-icon">
+                    <i class="bi bi-grid-fill"></i>
+                </div>
+                <div class="pill-title">All Services</div>
+            </a>
+            {% if subcategories %}
+                {% for sub in subcategories %}
+                    <a href="{% url 'subcategory' %}?cat_id={{ category.id }}&subcat_id={{ sub.id }}" 
+                       class="subcat-pill-card c-purple {% if selected_subcat and selected_subcat.id == sub.id %}active{% endif %}" style="text-decoration:none;">
+                        <div class="pill-icon">
+                            <i class="bi {{ sub.subcat_icons|default:'bi-tools' }}"></i>
+                        </div>
+                        <div class="pill-title">{{ sub.subcat_names }}</div>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="no-subcategories-msg" style="grid-column: 1 / -1; padding: 24px; text-align: center; color: #666; background: #fff; border-radius: 12px; font-weight: 500;">
+                    <i class="bi bi-info-circle" style="font-size: 1.5rem; display: block; margin-bottom: 8px; color: #1F7A63;"></i>
+                    No subcategories available for {% if category %}{{ category.name }}{% else %}this category{% endif %} yet.
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- ===== 4. Available Services Section ===== -->
+    <section class="services-list-container">
+        <div class="services-filter-header">
+            <div>
+                <h3 id="servicesListTitle">Available Services {% if selected_subcat %}for {{ selected_subcat.subcat_names }}{% elif category %}for {{ category.name }}{% endif %}</h3>
+                <p id="servicesListSubtitle">Book verified experts with transparent pricing and top ratings</p>
+            </div>
+            <div class="search-mini-box">
+                <i class="bi bi-search"></i>
+                <input type="text" id="serviceSearchInput" placeholder="Filter services..." onkeyup="filterServicesList()">
+            </div>
+        </div>
+
+        <!-- Service Cards Grid -->
+        <div class="services-grid" id="servicesGrid">
+            {% if services %}
+                {% for srv in services %}
+                    <div class="service-card">
+                        <a href="{% url 'view_service' %}?service_id={{ srv.id }}" style="text-decoration:none; color:inherit; display:block; position: relative;">
+                            {% if srv.service_image %}
+                                <img src="{{ srv.service_image.url }}" alt="{{ srv.service_name }}" class="service-card-img">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=800&auto=format&fit=crop" alt="{{ srv.service_name }}" class="service-card-img">
+                            {% endif %}
+                            {% if srv.is_pincode_match %}
+                                <span style="position: absolute; top: 10px; left: 10px; background: #047857; color: white; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 2;">
+                                    <i class="bi bi-geo-alt-fill me-1"></i> In Your Area ({{ customer_pincode }})
+                                </span>
+                            {% endif %}
+                        </a>
+                        <div class="service-card-body">
+                            <span class="service-card-badge">{% if srv.subcategory %}{{ srv.subcategory.subcat_names }}{% else %}{{ srv.category.name }}{% endif %}</span>
+                            <a href="{% url 'view_service' %}?service_id={{ srv.id }}" style="text-decoration:none; color:inherit;">
+                                <h4 class="service-card-title">{{ srv.service_name }}</h4>
+                            </a>
+                            <div class="service-card-provider">
+                                {% if srv.provider_avatar %}
+                                    <img src="{{ srv.provider_avatar }}" alt="{{ srv.provider_name }}" class="provider-avatar">
+                                {% else %}
+                                    <img src="https://ui-avatars.com/api/?name={{ srv.provider_name }}&background=1F7A63&color=fff" alt="{{ srv.provider_name }}" class="provider-avatar">
+                                {% endif %}
+                                <span>{{ srv.provider_name }}</span>
+                            </div>
+                            <div class="service-card-meta">
+                                <div class="service-price">Starting ₹{{ srv.price|floatformat:0 }}</div>
+                                <div class="service-rating">
+                                    <i class="bi bi-star-fill"></i> {% if srv.provider_avg_rating and srv.provider_avg_rating > 0 %}{{ srv.provider_avg_rating }}{% else %}New{% endif %} ({% if srv.provider_review_count %}{{ srv.provider_review_count }}{% else %}0{% endif %})
+                                </div>
+                            </div>
+                            <a href="{% url 'view_service' %}?service_id={{ srv.id }}" class="btn-book-service">
+                                Book Service <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div style="grid-column: 1 / -1; text-align: center; padding: 48px 24px; color: #64748b; background: #fff; border-radius: 16px; border: 1px dashed #cbd5e1;">
+                    <i class="bi bi-tools text-secondary display-5 d-block mb-2"></i>
+                    <h5 class="fw-bold text-dark">No Services Listed Yet</h5>
+                    <p class="small mb-0">No active service providers have listed services for {% if selected_subcat %}"{{ selected_subcat.subcat_names }}"{% else %}"{{ category.name }}"{% endif %} yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Pure Frontend Live Filter Script -->
+    <script>
+        function filterServicesList() {
+            const query = document.getElementById("serviceSearchInput").value.toLowerCase();
+            const cards = document.querySelectorAll(".service-card");
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                card.style.display = text.includes(query) ? "flex" : "none";
+            });
+        }
+    </script>
+{% include 'user/footer.html' %}
+
+</body>
+</html>

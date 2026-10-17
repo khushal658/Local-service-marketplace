@@ -1,0 +1,319 @@
+{% load static %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Service Provider Sidebar Custom Stylesheet -->
+<link rel="stylesheet" href="{% static 'service_provider/navbar.css' %}">
+
+<!-- Topbar Header (Fixed Top Navigation Bar) -->
+<div class="sp-topbar" id="spTopbar">
+    <div class="topbar-left">
+        <button class="toggle-btn" id="toggleBtn" title="Toggle Navigation Sidebar">
+            <i class="bi bi-list" id="toggleIcon"></i>
+        </button>
+        <h5 class="topbar-title">Partner Dashboard</h5>
+    </div>
+
+    <div class="topbar-right">
+        <!-- Notification Icon with Dropdown -->
+        <div class="topbar-notif-dropdown" id="topbarNotifDropdown">
+            <button type="button" class="icon-btn position-relative" id="topbarNotifBtn" title="Notifications">
+                <i class="bi bi-bell"></i>
+                {% if navbar_unread_count and navbar_unread_count > 0 %}
+                    <span class="notif-count-badge" id="providerNotifBadge">{{ navbar_unread_count }}</span>
+                {% endif %}
+            </button>
+            
+            <div class="topbar-notif-menu" id="topbarNotifMenu" style="display: none;">
+                <div class="notif-header">
+                    <h6>Notifications</h6>
+                    <a href="{% url 'provider_accepted_jobs' %}">View All</a>
+                </div>
+                <div class="notif-list">
+                    {% if navbar_notifications %}
+                        {% for notif in navbar_notifications %}
+                            <a href="{% url 'provider_accepted_jobs' %}" class="notif-item {% if not notif.is_read %}unread{% endif %}">
+                                <div class="notif-item-title">{{ notif.title }}</div>
+                                <div class="notif-item-msg">{{ notif.message }}</div>
+                                <div class="notif-item-time"><i class="bi bi-clock me-1"></i>{{ notif.created_at|date:"d M Y, h:i A" }}</div>
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <div class="notif-empty-state">
+                            No new notifications.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Icon -->
+        <a href="#" class="icon-btn" title="Messages">
+            <i class="bi bi-chat-dots"></i>
+        </a>
+
+        <!-- Public Website Link -->
+        <a href="{% url 'provider_dashboard' %}" class="icon-btn" title="View Public Website">
+            <i class="bi bi-globe"></i>
+        </a>
+
+        <!-- Topbar Profile Photo & Dropdown Menu (Right Side) -->
+        <div class="topbar-profile-dropdown" id="topbarProfileDropdown">
+            <button type="button" class="topbar-profile-btn" id="topbarProfileBtn">
+                <img src="{{ provider.profile_image.url }}" alt="Rahul Sharma" class="topbar-avatar">
+                <span class="topbar-username">{{ provider.full_name }}</span>
+                <i class="bi bi-chevron-down" style="font-size: 0.75rem;"></i>
+            </button>
+
+            <div class="topbar-menu-dropdown" id="topbarMenuDropdown">
+                <div class="dropdown-header-custom">
+                    <h6>{{ provider.full_name }}</h6>
+                    <small>{{ provider.email }}</small>
+                </div>
+                <div class="dropdown-divider-custom"></div>
+                <a href="{% url 'provider_profile_update' %}" class="topbar-dropdown-item">
+                    <i class="bi bi-person"></i> My Profile
+                </a>
+                <a href="#" class="topbar-dropdown-item">
+                    <i class="bi bi-gear"></i> Account Settings
+                </a>
+                <a href="{% url 'user_index' %}" class="topbar-dropdown-item" target="_blank">
+                    <i class="bi bi-globe"></i> View Website
+                </a>
+                <div class="dropdown-divider-custom"></div>
+                <a href="{% url 'provider_logout' %}" class="topbar-dropdown-item text-danger">
+                    <i class="bi bi-box-arrow-right"></i> Logout Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Sidebar Backdrop Overlay -->
+<div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<!-- Sidebar Container -->
+<aside class="sidebar" id="sidebar">
+
+    <!-- Sidebar Header / Logo -->
+    <div class="sidebar-header">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <i class="bi bi-tools"></i>
+            </div>
+            <span class="logo-text">Service<span>Hub</span></span>
+        </a>
+    </div>
+
+    <!-- Navigation Menu List -->
+    <ul class="sidebar-menu">
+
+        <div class="menu-category-title">Main Menu</div>
+
+        <li>
+            <a href="{% url 'provider_dashboard' %}" class="{% if request.resolver_match.url_name == 'provider_dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'provider_profile_update' %}" class="{% if request.resolver_match.url_name == 'provider_profile_update' %}active{% endif %}">
+                <i class="bi bi-person-circle"></i>
+                <span>My Profile</span>
+            </a>
+        </li>
+
+        <div class="menu-category-title">Services & Orders</div>
+
+        <li>
+            <a href="{% url 'my_services' %}" class="{% if request.resolver_match.url_name == 'my_services' or request.resolver_match.url_name == 'edit_service' %}active{% endif %}">
+                <i class="bi bi-grid"></i>
+                <span>My Services</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'add_service' %}" class="{% if request.resolver_match.url_name == 'add_service' %}active{% endif %}">
+                <i class="bi bi-plus-circle"></i>
+                <span>Add New Service</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'provider_booking_requests' %}" class="{% if request.resolver_match.url_name == 'provider_booking_requests' %}active{% endif %}">
+                <i class="bi bi-calendar-check"></i>
+                <span>Booking Requests</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'provider_my_bookings' %}" class="{% if request.resolver_match.url_name == 'provider_my_bookings' %}active{% endif %}">
+                <i class="bi bi-journal-check"></i>
+                <span>My Bookings</span>
+            </a>
+        </li>
+
+
+        <li>
+            <a href="{% url 'provider_job_leads' %}" class="{% if request.resolver_match.url_name == 'provider_job_leads' %}active{% endif %}">
+                <i class="bi bi-briefcase-fill"></i>
+                <span>Local Job Leads</span>
+                <span class="badge bg-danger rounded-pill ms-auto">New</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'provider_accepted_jobs' %}" class="{% if request.resolver_match.url_name == 'provider_accepted_jobs' %}active{% endif %}">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Accepted Jobs & Orders</span>
+            </a>
+        </li>
+
+        <div class="menu-category-title">Account & Insights</div>
+
+        <li>
+            <a href="#">
+                <i class="bi bi-star-fill"></i>
+                <span>Reviews & Ratings</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="{% url 'provider_earnings' %}" class="{% if request.resolver_match.url_name == 'provider_earnings' %}active{% endif %}">
+                <i class="bi bi-cash-stack"></i>
+                <span>Earnings & Wallet</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="#">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <!-- Sidebar Footer / Logout -->
+    <div class="sidebar-footer">
+        <a href="{% url 'provider_logout' %}">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Logout Account</span>
+        </a>
+    </div>
+
+</aside>
+
+<!-- Interactive Sidebar & Topbar Profile JavaScript -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("toggleBtn");
+        const toggleIcon = document.getElementById("toggleIcon");
+        const spTopbar = document.getElementById("spTopbar");
+        const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+        const topbarProfileBtn = document.getElementById("topbarProfileBtn");
+        const topbarMenuDropdown = document.getElementById("topbarMenuDropdown");
+
+        function getMainContent() {
+            return document.getElementById("mainContent") || document.querySelector(".main-content");
+        }
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const mainContent = getMainContent();
+            if (window.innerWidth > 991) {
+                // Desktop Collapse Toggle
+                const isClosed = sidebar.classList.toggle("close");
+                if (spTopbar) spTopbar.classList.toggle("expand");
+                if (mainContent) mainContent.classList.toggle("expand");
+                if (toggleIcon) {
+                    toggleIcon.className = isClosed ? 'bi bi-layout-sidebar' : 'bi bi-list';
+                }
+            } else {
+                // Mobile Slide Toggle
+                const isShown = sidebar.classList.toggle("show");
+                if (sidebarBackdrop) sidebarBackdrop.classList.toggle("show");
+                if (toggleIcon) {
+                    toggleIcon.className = isShown ? 'bi bi-x-lg' : 'bi bi-list';
+                }
+            }
+        }
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", toggleSidebar);
+        }
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener("click", () => {
+                sidebar.classList.remove("show");
+                sidebarBackdrop.classList.remove("show");
+                if (toggleIcon) toggleIcon.className = 'bi bi-list';
+            });
+        }
+
+        // Window Resize Listener
+        window.addEventListener("resize", () => {
+            const mainContent = getMainContent();
+            if (window.innerWidth > 991) {
+                sidebar.classList.remove("show");
+                if (sidebarBackdrop) sidebarBackdrop.classList.remove("show");
+            } else {
+                sidebar.classList.remove("close");
+                if (spTopbar) spTopbar.classList.remove("expand");
+                if (mainContent) mainContent.classList.remove("expand");
+            }
+        });
+
+        // Topbar Notification & Profile Dropdown Toggles
+        const topbarNotifBtn = document.getElementById("topbarNotifBtn");
+        const topbarNotifMenu = document.getElementById("topbarNotifMenu");
+        const providerNotifBadge = document.getElementById("providerNotifBadge");
+
+        if (topbarNotifBtn && topbarNotifMenu) {
+            topbarNotifBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (topbarMenuDropdown) topbarMenuDropdown.classList.remove("show");
+                const isHidden = topbarNotifMenu.style.display === "none" || getComputedStyle(topbarNotifMenu).display === "none";
+                topbarNotifMenu.style.display = isHidden ? "flex" : "none";
+                topbarNotifMenu.classList.toggle("show", isHidden);
+
+                if (isHidden) {
+                    if (providerNotifBadge) {
+                        providerNotifBadge.style.display = "none";
+                    }
+                    topbarNotifMenu.querySelectorAll('.unread').forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    fetch("{% url 'mark_provider_notifications_read' %}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).catch(err => console.log('Error marking provider notifs read:', err));
+                }
+            });
+        }
+
+        if (topbarProfileBtn && topbarMenuDropdown) {
+            topbarProfileBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (topbarNotifMenu) {
+                    topbarNotifMenu.style.display = "none";
+                    topbarNotifMenu.classList.remove("show");
+                }
+                topbarMenuDropdown.classList.toggle("show");
+            });
+        }
+
+        document.addEventListener("click", () => {
+            if (topbarMenuDropdown) topbarMenuDropdown.classList.remove("show");
+            if (topbarNotifMenu) {
+                topbarNotifMenu.style.display = "none";
+                topbarNotifMenu.classList.remove("show");
+            }
+        });
+    });
+</script>
