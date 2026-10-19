@@ -76,21 +76,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Local_Service_Marketplace.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'bnly7tsawct1oxaxalsn',
-#         'USER': 'uhz8rfqkdqqui39r',
-#         'PASSWORD': 'H9xlxyzpBAkG2c56JM2G',  
-#         'HOST': 'bnly7tsawct1oxaxalsn-mysql.services.clever-cloud.com',
-#         'OPTIONS': {
-#             'charset': 'utf8mb4',
-#         },
-#     }
-# }
 
 
 DATABASES = {
@@ -151,12 +136,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'khushalsul658@gmail.com'
-# EMAIL_HOST_PASSWORD = 'xtot imig qawi hvak'
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = config("EMAIL_HOST")
@@ -168,8 +147,7 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# RAZORPAY_KEY_ID = "rzp_test_TI5QAXMnZtaRrn"
-# RAZORPAY_KEY_SECRET="viBzmk79646EbtEI0lZGtWfP"
+
 
 RAZORPAY_KEY_ID = config("RAZORPAY_KEY_ID")
 RAZORPAY_KEY_SECRET = config("RAZORPAY_KEY_SECRET")
